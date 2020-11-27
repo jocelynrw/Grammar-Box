@@ -1,0 +1,93 @@
+/*
+  elm-hot creates an additional div wrapper around the app to make HMR possible.
+  This could break styling in development mode if you are using Elm UI.
+
+  More context in the issue:
+    https://github.com/halfzebra/create-elm-app/issues/320
+*/
+[data-elm-hot="true"] {
+  height: inherit;
+}
+
+body {
+  font-family: 'Calibri', 'Lucida Grande', 'Trebuchet MS', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  text-align: center;
+  color: #293c4b;
+}
+
+h1 {
+  font-size: 30px;
+  float: left;
+  margin-left: 20px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+img {
+  margin: 50px 0;
+  max-width: 200px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  display: block;
+  padding: 8px;
+  margin: 5px;
+  background-color: #facaca;
+}
+
+#sidebar {
+  height: 100%; /* 100% Full-height */
+  width: 200; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 5px;
+  background-color: rgb(255, 255, 255); /* Black*/
+  border: 1px solid rgba(160, 160, 160, 0.349);
+  overflow-x: scroll; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* Position and style the close button (top right corner) */
+#sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+  background-color: rgba(255, 255, 255, 0.274);
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  #sidebar {padding-top: 15px;}
+  #sidebar a {font-size: 18px;}
+}
+
+#bottompanel {
+  border: 1px solid rgba(160, 160, 160, 0.349);
+  height: 100px; /* 100% Full-height */
+  width: 100%; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  bottom: 0; /* Stay at the top */
+  left: px;
+  padding-top: 10px
+}
+
+#phrases {
+  border: 1px solid grey;
+  padding-left: 5px;
+  padding-right: 5px;
+}

@@ -21,6 +21,7 @@ h1 {
   text-align: center;
   margin-left: 20px;
   width: 75%;
+  border: 1px solid rgb(128, 128, 128);
 }
 
 h2 {
@@ -78,18 +79,29 @@ li {
 #bottompanel {
   border: 1px solid rgba(160, 160, 160, 0.349);
   height: 20%; /* 100% Full-height */
-  width: 100%; /* 0 width - change this with JavaScript */
+  width: 75%; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
   /* z-index: 1; Stay on top */
   bottom: 0; /* Stay at the top */
   left: 0 px;
-  padding-top: 10px
+  padding-top: 10px;
+  margin-left: 20px;
 }
 
-#phrases {
-  border: 1px solid rgb(128, 128, 128);
-  padding-left: 5px;
-  padding-right: 5px;
+#sentence {
+  width: 80%
+ 
+ 
+}
+#phrases > svg {
+  padding: 5px;
+  margin: 5px; 
+  display: in-line;  
+}
+
+#right {
+  margin-right: min(15px, 5%);
+
 }
 
 table {
@@ -123,9 +135,15 @@ th, tr, td#words {
 
 #bottompanel > svg {
   padding: 5px;
-  margin: 5px;
+  margin: 15px;
 
   /* vertical-align: center; */
   display: in-line;
-  background-color: rgb(128, 128, 128);
+ 
 }
+
+#bottompanel > table
+{
+  margin-left: max(25px, 5%);
+}
+/* future project, fix the coding of the shapes panel to be more responsive*/

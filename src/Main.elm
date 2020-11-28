@@ -58,7 +58,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     let
-        phrasehtml = div [] [H.text phrase]
+        phrasehtml = div [HA.id "phrases"] [H.text phrase]
            
         wordshtml =
             phrase 
@@ -75,7 +75,7 @@ view model =
         navpanel = button[ onClick "openNav()" ] [H.text "Open"]
 
         circlehtml = svg
-            [SA.width "90px"]
+            [SA.height "130px", SA.width "90px"]
             [ circle
                 [ cx "45"
                 , cy "45"
@@ -85,9 +85,9 @@ view model =
                 , strokeWidth "3"
                 ]
                 []]
-        creshtml = svg [SA.width "80px", SA.height "150px"]
+        creshtml = svg [SA.width "80px", SA.height "130px"]
             [S.path  
-                [d "m 25.4334 53.5 a 22.5 22.5 0 1 1 0 43 a 22.5 22.5 0 0 0 0 -43 Z"
+                [d "m 30.034 22.3328 c -12.8744 4.06804 -21.9608 15.9459 -21.9254 28.6609 c 0.03536 12.6782 3.28112 16.2321 7.47444 8.18427 c 11.1244 -21.3503 42.5863 -20.4773 49.4476 1.37219 c 1.3828 4.40366 5.09983 3.02741 6.35778 -2.35374 c 5.27362 -22.56 -18.4226 -43.1099 -41.3544 -35.8637"
                 , fill "#007f00"
                 , stroke "#007f00"
                 , strokeWidth "3"
@@ -95,7 +95,7 @@ view model =
             ]
             
             [ ]]
-        recthtml = svg[SA.width "80px"]
+        recthtml = svg[SA.height "130px", SA.width "80px"]
             [rect
                 [ x "0"
                 , y "42"
@@ -107,7 +107,7 @@ view model =
                 ]
             []]
             
-        trinhtml = svg[SA.width "80px"]
+        trinhtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
                 [points "0,80 80,80 40,0"
                 , fill "black"
@@ -116,18 +116,18 @@ view model =
                 ]
             []]
         
-        triadjhtml = svg[SA.width "80px"]
+        triadjhtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
-                [points "0,60 60,60 30,0"
+                [points "10,60 70,60 40,0"
                 , fill "darkblue"
                 , stroke "darkblue"
                 , strokeWidth "2"
                 ]
             []]
         
-        triarthtml = svg[SA.width "80px"]
+        triarthtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
-                [points "0,40 40,40 20,0"
+                [points "20,40 60,40 40,0"
                 , fill "skyblue"
                 , stroke "skyblue"
                 , strokeWidth "2"
@@ -135,16 +135,16 @@ view model =
             []]
         -- trianglehtml = picture [triangle green 150]
         
-        triphtml = svg[SA.width "80px"]
+        triphtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
-                [points "0,80 40,80 20,0"
+                [points "20,80 60,80 40,0"
                 , fill "purple"
                 , stroke "purple"
                 , strokeWidth "2"
                 ]
             []]
         circlephtml = svg
-            [SA.width "90px"]
+            [SA.height "130px", SA.width "90px"]
             [ circle
                 [ cx "45"
                 , cy "45"
@@ -154,27 +154,40 @@ view model =
                 , strokeWidth "3"
                 ]
                 []]
-        keyholehtml = svg [SA.height "250px"]
+        keyholehtml = svg [SA.height "130px", SA.width "80px"]
             [S.path
-                [d "m0,0 c0.332,1.064 33.917,124.223 34.327,125.881c0.266,1.071 0.097,1.324 -1.253,1.883c-19.137,7.927 -34.248,33.769 -33.121,56.641c2.854,57.924 76.739,79.896 110.404,32.832c21.2,-29.638 10.251,-74.941 -21.581,-89.295c-1.664,-0.75 -1.853,-0.998 -1.586,-2.076c0.386,-1.561 33.982,-124.75 34.327,-125.866c0.243,-0.791 -2.869,-0.833 -60.76,-0.833c-57.893,0 -61.003,0.042 -60.757,0.833"
+                [d "m 10.9173 23.0741 c 0.16702 0.47855 16.2158 53.3224 16.3923 53.9745 c 0.12486 0.46222 -0.00207 0.57534 -1.34097 1.19328 c -16.9309 7.81425 -20.2246 29.4483 -6.32289 41.529 c 21.9109 19.041 57.4778 -1.1025 47.8134 -27.0795 c -2.24286 -6.02826 -8.71964 -12.7444 -14.2862 -14.8145 c -0.64526 -0.2399 -0.72543 -0.34806 -0.5978 -0.808 c 0.19742 -0.71059 16.2444 -53.5383 16.4015 -53.9948 c 0.1168 -0.33896 -1.37 -0.35736 -29.0304 -0.35736 c -27.6614 0 -29.1472 0.01841 -29.0288 0.35736"
                 , stroke "rgb(211, 199, 94)"
                 , fill "rgb(255,255,0)"
                 , strokeWidth "3"
                 ]
                 []]
 
+        arrowLhtml = svg [SA.height "30px", SA.width "30px"] 
+            [ S.path[
+                d "M 19 4 L 18 4.57227 L 5 12 L 18 19.4277 L 19 20 L 19 18.8438 L 19 5 L 19 4 Z M 18 5.58398 L 18 18.2715 L 7.02344 12 L 18 5.58398 Z"
+                , stroke "darkslategray"
+                , fill "darkslategray"        
+                ]
+            []]
+        arrowRhtml = svg [SA.height "30px", SA.width "30px", SA.transform "scale(-1, 1)"] 
+            [ S.path[
+                d "M 24.695 12.912 L 13.718 19.328 L 24.695 25.599 L 24.695 12.912 Z M 25.695 11.328 L 25.695 12.328 L 25.695 26.172 L 25.695 27.328 L 24.695 26.756 L 11.695 19.328 L 24.695 11.9 L 25.695 11.328 Z"
+                , stroke "darkslategray"
+                , fill "darkslategray"        
+                ]
+            []]
 
     in
     div []
-        [   h1 [ HA.id "phrases"] [phrasehtml ]
-        -- ,   div [] [navpanel]
+        [   h1 [] [table [] [tr [] [ td[] [arrowLhtml], td[HA.id "sentence"] [phrasehtml], td[HA.id "right"] [arrowRhtml]] ]]
+--TO DO: Line up Arrows
         ,   div [ HA.id "sidebar"] [
                 div [ ] [boxeshtml]
             ,   div [] [wordshtml]
             ]
-        ,   div [ HA.id "bottompanel" ] 
-            [trinhtml, triadjhtml, triarthtml, triphtml, circlehtml, circlephtml, recthtml, creshtml
-    
+        ,   div [ HA.id "bottompanel" ] [
+            table[] [tr[] [trinhtml, triadjhtml, triarthtml, triphtml, circlehtml, creshtml, circlephtml, recthtml, keyholehtml ] ] 
         ]]
 
 --create a table which can automatically fill with shapes

@@ -12,7 +12,7 @@
 body {
   font-family: 'Calibri', 'Lucida Grande', 'Trebuchet MS', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
-  text-align: center;
+  text-align: left;
   color: #293c4b;
 }
 
@@ -41,20 +41,19 @@ ul {
 li {
   display: block;
   padding: 8px;
-  margin: 5px;
-  background-color: #facaca;
+  margin: 15px;
 }
 
 #sidebar {
   height: 100%; /* 100% Full-height */
-  width: 200; /* 0 width - change this with JavaScript */
+  width: 20%; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
   z-index: 1; /* Stay on top */
   top: 0; /* Stay at the top */
   right: 5px;
   background-color: rgb(255, 255, 255); /* Black*/
   border: 1px solid rgba(160, 160, 160, 0.349);
-  overflow-x: scroll; /* Disable horizontal scroll */
+  overflow-x: scroll; /* enable horizontal scroll */
   padding-top: 60px; /* Place content 60px from the top */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
 }
@@ -80,9 +79,9 @@ li {
   height: 100px; /* 100% Full-height */
   width: 100%; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Stay on top */
+  /* z-index: 1; Stay on top */
   bottom: 0; /* Stay at the top */
-  left: px;
+  left: 0 px;
   padding-top: 10px
 }
 
@@ -90,4 +89,33 @@ li {
   border: 1px solid grey;
   padding-left: 5px;
   padding-right: 5px;
+}
+
+table {
+  height: 80%;
+  left: 15px;
+  border-collapse: collapse;
+  border-color: black;
+}
+/*Add a container element (like <div>) with overflow-x:auto around the <table> element to make it responsive:*/
+
+th, tr, td {
+  vertical-align: center;
+  text-align: center;
+  width: 100px;
+  margin: 15px;
+  padding: 15px;
+}
+
+#grammar-boxes {
+   /* neither of these are working somehow*/
+}
+
+button#grammar-boxes{
+  background-color: -internal-light-dark(rgb(204, 120, 120), rgb(59, 59, 59));
+}
+
+th, tr, td#words {
+  vertical-align: left;
+  text-align: left;
 }

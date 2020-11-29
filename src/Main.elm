@@ -1,39 +1,35 @@
 module Main exposing (..)
--- import Playground exposing (..)
-
+--import Playground exposing (..)
+import List.Extra exposing (getAt) 
+--somehow not working
 import Browser
 import Html as H exposing (..)
 import Html.Attributes as HA exposing (..)
 import Html.Events exposing (onClick)
 import Svg as S exposing (..)
-import Svg.Attributes as SA exposing (..) 
+import Svg.Attributes as SA exposing (..)
+import Array 
+
 
 ---- MODEL ----
+phrases: List String
+phrases = ["the red house", "that big barn", "a furry cat"]
+
+myArray= Array.fromList[phrases]
 
 
 type alias Model =
-    {}
+    {currentPhrase: Maybe String}
+--currentPhrase = Array.get 0 myArray
 
--- main1 : Html msg
--- main1 =
-  
---     , rect
---         [ x "100"
---         , y "10"
---         , SA.width "40"
---         , SA.height "40"
---         , fill "green"
---         , stroke "black"
---         , strokeWidth "2"
---         ]
---         []]
---the problem is that 'height and width' are in html and svg
-init : ( Model, Cmd Msg )
+init : (Int->List String->Maybe String)
 init =
-    ( {}, Cmd.none )
+    {currentPhrase = List.getAt 0 phrases}
+    
+    --{currentPhrase = Array.get 0 myArray}
 
-phrase: String
-phrase = "the red house"
+
+
 boxes: List String
 boxes = ["red 1", "red 2", "red 3"]
 
@@ -43,7 +39,9 @@ boxes = ["red 1", "red 2", "red 3"]
 
 
 type Msg
-    = NoOp
+    = Back |
+    Forward|
+    None
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,21 +56,22 @@ update msg model =
 view : Model -> Html Msg
 view model =
     let
-        phrasehtml = div [HA.id "phrases"] [H.text phrase]
+        phrasehtml = div [HA.id "phrases"] [H.text currentPhrase]
            
         wordshtml =
-            phrase 
+            phrases 
             |> String.split " " 
             |> List.map ( \word ->
-               tr[] [th [] [ button [] [H.text word]]]) 
-            |> table [HA.id "words"]
+               tr[] [td [HA.id "words"] [H.text word]]) 
+            |> table [HA.id "wordstable"]
         
         boxeshtml=
             boxes
-            |> List.map (\word -> li[] [button[ ] [H.text word]])
-            |> ul [ HA.id "grammar-boxes"] 
-            
-        navpanel = button[ onClick "openNav()" ] [H.text "Open"]
+            |> List.map (\word -> li[] [button[ HA.id "grammarboxes" ] [H.text word]])
+            |> ul [ HA.id "allboxes"] 
+        
+        --gbtitleb= div[HA.class "title"] [String "Grammar Boxes"]
+        --navpanel = button[ onClick "openNav()" ] [H.text "Open"]
 
         circlehtml = svg
             [SA.height "130px", SA.width "90px"]
@@ -182,8 +181,8 @@ view model =
     div []
         [   h1 [] [table [] [tr [] [ td[] [arrowLhtml], td[HA.id "sentence"] [phrasehtml], td[HA.id "right"] [arrowRhtml]] ]]
 --TO DO: Line up Arrows
-        ,   div [ HA.id "sidebar"] [
-                div [ ] [boxeshtml]
+        ,   div [ HA.id "sidebar"] [ H.text "Grammar Boxes",
+                div [HA.class "bottomborder"] [boxeshtml]
             ,   div [] [wordshtml]
             ]
         ,   div [ HA.id "bottompanel" ] [

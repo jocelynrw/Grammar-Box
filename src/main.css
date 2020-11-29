@@ -13,7 +13,9 @@ body {
   font-family: 'Calibri', 'Lucida Grande', 'Trebuchet MS', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
   text-align: left;
-  color: #293c4b;
+  color: #000000;
+  font-size: larger;
+  font-weight: bold;
 }
 
 h1 {
@@ -41,9 +43,15 @@ ul {
 }
 
 li {
-  display: block;
+  display: inline;
   padding: 8px;
-  margin: 15px;
+  margin: 5px;
+}
+
+div.bottomborder{
+  background-color: darkturquoise;
+  border-bottom: 10px, solid, darkslategrey;
+  padding: 5px;
 }
 
 #sidebar {
@@ -76,6 +84,21 @@ li {
   #sidebar a {font-size: 18px;}
 }
 
+#wordstable {
+  border-collapse: collapse;
+  border: black;
+}
+/* why won't this work*/
+
+#words{
+  background: cornflowerblue;
+  display: block;
+  width: fit-content;
+  padding: auto;
+  
+}
+
+
 #bottompanel {
   border: 1px solid rgba(160, 160, 160, 0.349);
   height: 20%; /* 100% Full-height */
@@ -96,7 +119,7 @@ li {
 #phrases > svg {
   padding: 5px;
   margin: 5px; 
-  display: in-line;  
+  display: inline;  
 }
 
 #right {
@@ -120,12 +143,9 @@ th, tr, td {
   padding: 15px;
 }
 
-#grammar-boxes {
-   /* neither of these are working somehow*/
-}
-
-button#grammar-boxes{
-  background-color: -internal-light-dark(rgb(204, 120, 120), rgb(59, 59, 59));
+#grammarboxes{
+  background-color: firebrick;
+  color: lightgreen;
 }
 
 th, tr, td#words {
@@ -136,10 +156,7 @@ th, tr, td#words {
 #bottompanel > svg {
   padding: 5px;
   margin: 15px;
-
-  /* vertical-align: center; */
   display: in-line;
- 
 }
 
 #bottompanel > table

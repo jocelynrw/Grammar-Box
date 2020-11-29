@@ -44,7 +44,7 @@ ul {
 
 li {
   display: inline;
-  padding: 8px;
+  padding: 5px;
   margin: 5px;
 }
 
@@ -95,7 +95,13 @@ div.bottomborder{
   display: block;
   width: fit-content;
   padding: auto;
-  
+ -webkit-user-select: none;
+ -khtml-user-select: none;
+ -webkit-touch-callout: none;
+ -moz-user-select: none;
+ -o-user-select: none;
+ user-select: none;
+ -webkit-user-drag: element;
 }
 
 
@@ -109,6 +115,8 @@ div.bottomborder{
   left: 0 px;
   padding-top: 10px;
   margin-left: 20px;
+  -webkit-user-drag: element;
+  
 }
 
 #sentence {
@@ -157,6 +165,12 @@ th, tr, td#words {
   padding: 5px;
   margin: 15px;
   display: in-line;
+  
+  
+}
+
+#bottompanel > td {
+  
 }
 
 #bottompanel > table

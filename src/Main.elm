@@ -1,5 +1,4 @@
 module Main exposing (..)
---import Playground exposing (..)
 import List.Extra exposing (getAt) 
 --somehow not working
 import Browser
@@ -9,29 +8,33 @@ import Html.Events exposing (onClick)
 import Svg as S exposing (..)
 import Svg.Attributes as SA exposing (..)
 import Array 
-
+import Draggable
+import Html5.DragDrop exposing (Position)
 
 ---- MODEL ----
-phrases: List String
-phrases = ["the red house", "that big barn", "a furry cat"]
-
-myArray= Array.fromList[phrases]
-
 
 type alias Model =
-    {currentPhrase: Maybe String}
+    {currentPhrase : Maybe String,
+    phrases : Array.Array String,
+    position : ( Int, Int )
+    , drag : Draggable.State String}
 --currentPhrase = Array.get 0 myArray
 
-init : (Int->List String->Maybe String)
+init : ( Model, Cmd Msg )
 init =
-    {currentPhrase = List.getAt 0 phrases}
-    
-    --{currentPhrase = Array.get 0 myArray}
+    let 
+        sentences = ["the red house", "that big barn", "a furry cat"]
+    in
+        ({ phrases = Array.fromList sentences,
+        currentPhrase = List.head sentences, 
+        position = ( 0, 0 ), drag = Draggable.init},
+        Cmd.none)
 
-
+--Array.get 0 sentences
 
 boxes: List String
 boxes = ["red 1", "red 2", "red 3"]
+
 
 
 
@@ -39,16 +42,30 @@ boxes = ["red 1", "red 2", "red 3"]
 
 
 type Msg
-    = Back |
-    Forward|
-    None
+    = Back 
+    | Forward
+    | None 
+    | OnDragBy Draggable.Delta
+    | DragMsg (Draggable.Msg String)
+
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    ( model, Cmd.none )
+update msg ({ position } as model) =
+    case msg of
+        OnDragBy ( dx, dy ) ->
+            let
+                ( x, y) =
+                    position 
+            in 
+                ( { model | position = (round (toFloat x + dx), round (toFloat y +dy) ) }, Cmd.none )
+        DragMsg dragMsg ->
+            Draggable.update dragConfig drag Msg model
 
 
+dragConfig : Draggable.Config String Msg
+dragConfig =
+    Draggable.basicConfig OnDragBy
 
 ---- VIEW ----
 
@@ -56,13 +73,31 @@ update msg model =
 view : Model -> Html Msg
 view model =
     let
-        phrasehtml = div [HA.id "phrases"] [H.text currentPhrase]
-           
+
+-- view { xy } =
+--     let
+--         translate =
+--             "translate(" ++ String.fromFloat xy.x ++ "px, " ++ String.fromFloat xy.y ++ "px)"
+
+-- 8. Triggering drag
+-- Inside your view function, you must somehow make the element draggable. You do that by adding a trigger for the mousedown event. You must also specify a key for that element. This can be useful when there are multiple drag targets in the same view.
+
+-- Of course, you'll also have to style your DOM element such that it reflects its moving position (with top: x; left: y or transform: translate)
+        sentence = case model.currentPhrase of
+            Nothing ->
+                ""
+            Just p ->
+                p
+
+        phrasehtml = div [HA.id "phrases"] [H.text sentence]
+
+        sentences = String.join " " (Array.toList model.phrases)
         wordshtml =
-            phrases 
+            sentences 
             |> String.split " " 
             |> List.map ( \word ->
-               tr[] [td [HA.id "words"] [H.text word]]) 
+               tr[] [td ([HA.id "words", Draggable.mouseTrigger () DragMsg]
+            ++ Draggable.touchTriggers () DragMsg)  [H.text word] ])
             |> table [HA.id "wordstable"]
         
         boxeshtml=
@@ -186,10 +221,8 @@ view model =
             ,   div [] [wordshtml]
             ]
         ,   div [ HA.id "bottompanel" ] [
-            table[] [tr[] [trinhtml, triadjhtml, triarthtml, triphtml, circlehtml, creshtml, circlephtml, recthtml, keyholehtml ] ] 
+            table[] [tr[] [td[] [trinhtml], td[] [triadjhtml], td[] [triarthtml], td[] [triphtml], td[] [circlehtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ] 
         ]]
-
---create a table which can automatically fill with shapes
 
 
 
@@ -204,3 +237,8 @@ main =
         , update = update
         , subscriptions = always Sub.none
         }
+
+--SUBSCRIPTIONS
+subscriptions : Model -> Sub Msg
+subscriptions {drag} =
+    Draggable.subscriptions DragMsg drag

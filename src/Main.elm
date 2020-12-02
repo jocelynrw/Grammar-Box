@@ -7,16 +7,27 @@ import Html.Attributes as HA exposing (..)
 import Html.Events exposing (onClick)
 import Svg as S exposing (..)
 import Svg.Attributes as SA exposing (..)
-import Array 
+import Array
 import Draggable
-import Html5.DragDrop exposing (Position)
 
----- MODEL ----
+
+
+--SUBSCRIPTIONS
+subscriptions : Model -> Sub Msg
+subscriptions {drag} =
+    Draggable.subscriptions DragMsg drag
+
+
+---- MODEL ----    
+type alias Position = 
+    { x : Float
+    , y : Float
+    }
 
 type alias Model =
     {currentPhrase : Maybe String,
     phrases : Array.Array String,
-    position : ( Int, Int )
+    xy : Position
     , drag : Draggable.State String}
 --currentPhrase = Array.get 0 myArray
 
@@ -27,14 +38,16 @@ init =
     in
         ({ phrases = Array.fromList sentences,
         currentPhrase = List.head sentences, 
-        position = ( 0, 0 ), drag = Draggable.init},
+        xy = Position 100 100, drag = Draggable.init},
         Cmd.none)
 
 --Array.get 0 sentences
-
+-- drag = Draggable.init
 boxes: List String
 boxes = ["red 1", "red 2", "red 3"]
 
+wordd: String
+wordd = "hello"
 
 
 
@@ -51,19 +64,17 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ position } as model) =
+update msg ({ xy } as model) =
     case msg of
         OnDragBy ( dx, dy ) ->
-            let
-                ( x, y) =
-                    position 
-            in 
-                ( { model | position = (round (toFloat x + dx), round (toFloat y +dy) ) }, Cmd.none )
+            ( { model | xy = Position (xy.x + dx) (xy.y +dy)  }, Cmd.none )
         DragMsg dragMsg ->
-            Draggable.update dragConfig drag Msg model
+            Draggable.update dragConfig dragMsg model
+        _ ->
+            (model, Cmd.none)
+        
 
-
-dragConfig : Draggable.Config String Msg
+dragConfig : Draggable.Config dragMsg Msg
 dragConfig =
     Draggable.basicConfig OnDragBy
 
@@ -71,11 +82,9 @@ dragConfig =
 
 
 view : Model -> Html Msg
-view model =
+view ({ xy } as model) =
     let
-
--- view { xy } =
---     let
+--want to 
 --         translate =
 --             "translate(" ++ String.fromFloat xy.x ++ "px, " ++ String.fromFloat xy.y ++ "px)"
 
@@ -96,10 +105,15 @@ view model =
             sentences 
             |> String.split " " 
             |> List.map ( \word ->
-               tr[] [td ([HA.id "words", Draggable.mouseTrigger () DragMsg]
-            ++ Draggable.touchTriggers () DragMsg)  [H.text word] ])
+               tr[] [td ([HA.class "words", Draggable.mouseTrigger "my-element" DragMsg]
+            ++ Draggable.touchTriggers "my-element" DragMsg)  [H.text word] ])
             |> table [HA.id "wordstable"]
+            --make this separate into only three rows and append the words into separate tables
         
+        wordtrial = div ([Draggable.mouseTrigger "my-word" DragMsg
+                        , HA.style "background-color" "lightgray"  
+                        , HA.style "top" (String.fromFloat xy.x), HA.style "left" (String.fromFloat xy.y) ]) [H.text "word"]
+
         boxeshtml=
             boxes
             |> List.map (\word -> li[] [button[ HA.id "grammarboxes" ] [H.text word]])
@@ -216,9 +230,12 @@ view model =
     div []
         [   h1 [] [table [] [tr [] [ td[] [arrowLhtml], td[HA.id "sentence"] [phrasehtml], td[HA.id "right"] [arrowRhtml]] ]]
 --TO DO: Line up Arrows
+        ,   div ([Draggable.mouseTrigger "my-word" DragMsg
+                        , HA.style "background-color" "lightgray"  
+                        , HA.style "top" (String.fromFloat xy.x), HA.style "left" (String.fromFloat xy.y) ]) [wordtrial]
         ,   div [ HA.id "sidebar"] [ H.text "Grammar Boxes",
                 div [HA.class "bottomborder"] [boxeshtml]
-            ,   div [] [wordshtml]
+            ,   div [ Draggable.mouseTrigger "words" DragMsg ] [wordshtml] --trouble here
             ]
         ,   div [ HA.id "bottompanel" ] [
             table[] [tr[] [td[] [trinhtml], td[] [triadjhtml], td[] [triarthtml], td[] [triphtml], td[] [circlehtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ] 
@@ -238,7 +255,3 @@ main =
         , subscriptions = always Sub.none
         }
 
---SUBSCRIPTIONS
-subscriptions : Model -> Sub Msg
-subscriptions {drag} =
-    Draggable.subscriptions DragMsg drag

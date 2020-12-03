@@ -110,9 +110,14 @@ view ({ xy } as model) =
             |> table [HA.id "wordstable"]
             --make this separate into only three rows and append the words into separate tables
         
-        wordtrial = div ([Draggable.mouseTrigger "my-word" DragMsg
-                        , HA.style "background-color" "lightgray"  
-                        , HA.style "top" (String.fromFloat xy.x), HA.style "left" (String.fromFloat xy.y) ]) [H.text "word"]
+        wordtrial = div ([ HA.style "display" "flex"
+         , HA.style "padding" "16px"
+         , HA.style "background-color" "lightgray"
+         , HA.style "width" "64px"
+         , HA.style "cursor" "move"
+         , Draggable.mouseTrigger "word" DragMsg
+         ]
+            ++ Draggable.touchTriggers "word" DragMsg) [H.text "word"]
 
         boxeshtml=
             boxes
@@ -235,7 +240,7 @@ view ({ xy } as model) =
                         , HA.style "top" (String.fromFloat xy.x), HA.style "left" (String.fromFloat xy.y) ]) [wordtrial]
         ,   div [ HA.id "sidebar"] [ H.text "Grammar Boxes",
                 div [HA.class "bottomborder"] [boxeshtml]
-            ,   div [ Draggable.mouseTrigger "words" DragMsg ] [wordshtml] --trouble here
+            ,   div [] [wordshtml] --trouble here
             ]
         ,   div [ HA.id "bottompanel" ] [
             table[] [tr[] [td[] [trinhtml], td[] [triadjhtml], td[] [triarthtml], td[] [triphtml], td[] [circlehtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ] 
@@ -252,6 +257,6 @@ main =
         { view = view
         , init = \_ -> init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
 

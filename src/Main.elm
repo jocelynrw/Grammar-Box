@@ -19,10 +19,17 @@ subscriptions {drag} =
 
 
 ---- MODEL ----    
-type alias Position = 
-    { x : Float
-    , y : Float
+type alias Shape = 
+    {id: Id
+    , position : Position
     }
+
+type alias Id = 
+    String
+
+type alias Position = 
+    {x : Float 
+    , y : Float }
 
 type alias Model =
     {currentPhrase : Maybe String,
@@ -67,7 +74,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg ({ xy } as model) =
     case msg of
         OnDragBy ( dx, dy ) ->
-            ( { model | xy = Position (xy.x + dx) (xy.y +dy)  }, Cmd.none )
+            ( { model | xy = Position (xy.x + dx) (xy.y + dy)  }, Cmd.none )
         DragMsg dragMsg ->
             Draggable.update dragConfig dragMsg model
         _ ->
@@ -84,9 +91,9 @@ dragConfig =
 view : Model -> Html Msg
 view ({ xy } as model) =
     let
---want to 
---         translate =
---             "translate(" ++ String.fromFloat xy.x ++ "px, " ++ String.fromFloat xy.y ++ "px)"
+
+        translate =
+            "translate(" ++ String.fromFloat xy.x ++ "px, " ++ String.fromFloat xy.y ++ "px)"
 
 -- 8. Triggering drag
 -- Inside your view function, you must somehow make the element draggable. You do that by adding a trigger for the mousedown event. You must also specify a key for that element. This can be useful when there are multiple drag targets in the same view.
@@ -113,10 +120,10 @@ view ({ xy } as model) =
         wordtrial = div ([ HA.style "display" "flex"
          , HA.style "padding" "16px"
          , HA.style "background-color" "lightgray"
-         , HA.style "width" "64px"
          , HA.style "cursor" "move"
-         , Draggable.mouseTrigger "word" DragMsg
-         ]
+         , HA.style "width" "64px"
+         , HA.style "transform" translate
+         , Draggable.mouseTrigger "word" DragMsg]
             ++ Draggable.touchTriggers "word" DragMsg) [H.text "word"]
 
         boxeshtml=
@@ -160,15 +167,19 @@ view ({ xy } as model) =
                 ]
             []]
             
-        trinhtml = svg[SA.height "130px", SA.width "80px"]
-            [polygon
-                [points "0,80 80,80 40,0"
-                , fill "black"
-                , stroke "black"
-                , strokeWidth "2"
-                ]
-            []]
-        
+        trinhtml = 
+            span ([ HA.style "cursor" "move"
+                , HA.style "transform" translate
+                , Draggable.mouseTrigger "blckTri" DragMsg]
+                    ++ Draggable.touchTriggers "blckTri" DragMsg) [svg[SA.height "130px", SA.width "80px"]
+                [polygon
+                    [points "0,80 80,80 40,0"
+                    , fill "black"
+                    , stroke "black"
+                    , strokeWidth "2"
+                    ]
+                []]]
+            
         triadjhtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
                 [points "10,60 70,60 40,0"
@@ -235,9 +246,7 @@ view ({ xy } as model) =
     div []
         [   h1 [] [table [] [tr [] [ td[] [arrowLhtml], td[HA.id "sentence"] [phrasehtml], td[HA.id "right"] [arrowRhtml]] ]]
 --TO DO: Line up Arrows
-        ,   div ([Draggable.mouseTrigger "my-word" DragMsg
-                        , HA.style "background-color" "lightgray"  
-                        , HA.style "top" (String.fromFloat xy.x), HA.style "left" (String.fromFloat xy.y) ]) [wordtrial]
+        ,   span [] [wordtrial]
         ,   div [ HA.id "sidebar"] [ H.text "Grammar Boxes",
                 div [HA.class "bottomborder"] [boxeshtml]
             ,   div [] [wordshtml] --trouble here

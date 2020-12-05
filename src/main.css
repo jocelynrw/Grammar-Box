@@ -59,13 +59,14 @@ div.bottomborder{
   width: 20%; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
   z-index: 1; /* Stay on top */
-  top: 0; /* Stay at the top */
   right: 5px;
-  background-color: rgb(255, 255, 255); /* Black*/
+  top: 5px;
+  background-color: rgb(255, 255, 255);
   border: 1px solid rgba(160, 160, 160, 0.349);
-  overflow-x: scroll; /* enable horizontal scroll */
-  padding-top: 60px; /* Place content 60px from the top */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  overflow-x: scroll;
+  padding-top: 10px;
+  transition: 0.5s;
+  padding-left: 15px;
 }
 
 /* Position and style the close button (top right corner) */
@@ -111,7 +112,7 @@ div.bottomborder{
   width: 75%; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
   /* z-index: 1; Stay on top */
-  bottom: 0; /* Stay at the top */
+  bottom: 0; 
   left: 0 px;
   padding-top: 10px;
   margin-left: 20px;
@@ -154,6 +155,7 @@ th, tr, td {
 #grammarboxes{
   background-color: firebrick;
   color: lightgreen;
+  top: 
 }
 
 th, tr, td#words {

@@ -9,6 +9,8 @@ import Svg as S exposing (..)
 import Svg.Attributes as SA exposing (..)
 import Array
 import Draggable
+import List.Extra exposing (group)
+import Draggable.Events exposing (onClick, onDragBy, onDragStart)
 
 
 
@@ -31,22 +33,101 @@ type alias Position =
     {x : Float 
     , y : Float }
 
+makeShape : Id -> Position -> Shape
+makeShape id position =
+    Shape id position
+
+dragShapeBy : Position -> Shape -> Shape
+dragShapeBy delta shape = 
+    { shape | position = Position (shape.position.x + delta.x)
+     (shape.position.y + delta.y) }
+---this is fake but it's temporary
+
+type alias ShapeGroup = 
+    {uid : Int 
+    , movingShape : Maybe Shape
+    , idleShapes : List Shape}
+
+emptyGroup : ShapeGroup
+emptyGroup = 
+    ShapeGroup 0 Nothing [] 
+
+addShape : Position -> ShapeGroup -> ShapeGroup  
+addShape position ({ uid, idleShapes } as group) = 
+    { group
+        | idleShapes = makeShape (String.fromInt uid) position :: idleShapes
+        , uid = uid + 1}
+
+makeShapeGroup : List Position -> ShapeGroup
+makeShapeGroup positions = 
+    positions
+        |>List.foldl addShape emptyGroup 
+
+allShapes : ShapeGroup -> List Shape
+allShapes { movingShape, idleShapes} =
+    movingShape 
+        |> Maybe.map (\a -> a :: idleShapes )
+        |> Maybe.withDefault idleShapes 
+
+startDragging : Id -> ShapeGroup -> ShapeGroup
+startDragging id ( { idleShapes, movingShape} as group) =
+    let 
+        ( targetAsList, others) =
+            List.partition (.id >> (==) id) idleShapes
+    
+    in 
+    { group 
+        | idleShapes = others 
+        , movingShape = targetAsList |> List.head
+    }
+
+stopDragging : ShapeGroup -> ShapeGroup 
+stopDragging group = 
+    { group 
+        | idleShapes = allShapes group 
+        , movingShape = Nothing 
+    }
+
+dragActiveBy : Position -> ShapeGroup -> ShapeGroup 
+dragActiveBy delta group = 
+    { group | movingShape = group.movingShape |> Maybe.map (dragShapeBy delta) }
+
+
+
+
 type alias Model =
-    {currentPhrase : Maybe String,
-    phrases : Array.Array String,
-    xy : Position
-    , drag : Draggable.State String}
+    { shapeGroup : ShapeGroup
+    , drag : Draggable.State Id
+    }
+    -- {currentPhrase : Maybe String,
+    -- phrases : Array.Array String,
+    -- xy : Position
+    -- , drag : Draggable.State String}
 --currentPhrase = Array.get 0 myArray
 
-init : ( Model, Cmd Msg )
-init =
-    let 
-        sentences = ["the red house", "that big barn", "a furry cat"]
+shapePositions : List Position
+shapePositions =
+    let
+        indexToPosition =
+            toFloat >> (*) 60 >> (+) 10 >> Position 10
     in
-        ({ phrases = Array.fromList sentences,
-        currentPhrase = List.head sentences, 
-        xy = Position 100 100, drag = Draggable.init},
-        Cmd.none)
+    List.range 0 10 |> List.map indexToPosition
+
+init : flag -> ( Model, Cmd Msg )
+init _ = 
+    ( { shapeGroup = makeShapeGroup shapePositions 
+        , drag = Draggable.init } 
+        , Cmd.none
+    )
+
+
+    -- let 
+    --     sentences = ["the red house", "that big barn", "a furry cat"]
+    -- in
+    --     ({ phrases = Array.fromList sentences,
+    --     currentPhrase = List.head sentences, 
+    --     xy = Position 100 100, drag = Draggable.init},
+    --     Cmd.none)
 
 --Array.get 0 sentences
 -- drag = Draggable.init
@@ -65,49 +146,65 @@ type Msg
     = Back 
     | Forward
     | None 
-    | OnDragBy Draggable.Delta
-    | DragMsg (Draggable.Msg String)
-
+    | OnDragBy Position --weird still 
+    | DragMsg (Draggable.Msg Id)
+    | StartDragging String
+    | StopDragging 
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ xy } as model) =
+update msg ({ shapeGroup } as model) =
     case msg of
-        OnDragBy ( dx, dy ) ->
-            ( { model | xy = Position (xy.x + dx) (xy.y + dy)  }, Cmd.none )
+        OnDragBy delta ->
+            ( { model | shapeGroup = shapeGroup |> dragActiveBy delta }, Cmd.none )
+        
+        -- ( dx, dy ) ->
+        --     ( { model | xy = Position (xy.x + dx) (xy.y + dy)  }, Cmd.none )
         DragMsg dragMsg ->
             Draggable.update dragConfig dragMsg model
+        
+        StartDragging id ->
+                ( { model | shapeGroup = shapeGroup |> startDragging id }, Cmd.none )
+
+        StopDragging ->
+            ( { model | shapeGroup = shapeGroup |> stopDragging }, Cmd.none )
+
         _ ->
             (model, Cmd.none)
         
 
-dragConfig : Draggable.Config dragMsg Msg
+dragConfig : Draggable.Config Id Msg
 dragConfig =
-    Draggable.basicConfig OnDragBy
+    Draggable.customConfig 
+        [ onDragBy (\( dx, dy ) -> Position dx dy |> OnDragBy ) 
+        , onDragStart StartDragging 
+        ]
+
 
 ---- VIEW ----
 
 
 view : Model -> Html Msg
-view ({ xy } as model) =
+view ({ shapeGroup } as model) =
     let
 
-        translate =
-            "translate(" ++ String.fromFloat xy.x ++ "px, " ++ String.fromFloat xy.y ++ "px)"
+        -- translate =
+        --     "translate(" ++ String.fromFloat position.x ++ "px, " ++ String.fromFloat shapeGroup.position.y ++ "px)"
 
 -- 8. Triggering drag
 -- Inside your view function, you must somehow make the element draggable. You do that by adding a trigger for the mousedown event. You must also specify a key for that element. This can be useful when there are multiple drag targets in the same view.
 
 -- Of course, you'll also have to style your DOM element such that it reflects its moving position (with top: x; left: y or transform: translate)
-        sentence = case model.currentPhrase of
-            Nothing ->
-                ""
-            Just p ->
-                p
+        -- sentence = case model.currentPhrase of
+        --     Nothing ->
+        --         ""
+        --     Just p ->
+        --         p
 
-        phrasehtml = div [HA.id "phrases"] [H.text sentence]
+        phrasehtml = div [HA.id "phrases"] [H.text "the end"]
 
-        sentences = String.join " " (Array.toList model.phrases)
+        sentences = "the end" 
+        -- String.join " " (Array.toList phrases)
         wordshtml =
             sentences 
             |> String.split " " 
@@ -122,7 +219,7 @@ view ({ xy } as model) =
          , HA.style "background-color" "lightgray"
          , HA.style "cursor" "move"
          , HA.style "width" "64px"
-         , HA.style "transform" translate
+        --  , HA.style "transform" translate
          , Draggable.mouseTrigger "word" DragMsg]
             ++ Draggable.touchTriggers "word" DragMsg) [H.text "word"]
 
@@ -169,7 +266,7 @@ view ({ xy } as model) =
             
         trinhtml = 
             span ([ HA.style "cursor" "move"
-                , HA.style "transform" translate
+                -- , HA.style "transform" translate
                 , Draggable.mouseTrigger "blckTri" DragMsg]
                     ++ Draggable.touchTriggers "blckTri" DragMsg) [svg[SA.height "130px", SA.width "80px"]
                 [polygon
@@ -264,7 +361,7 @@ main : Program () Model Msg
 main =
     Browser.element
         { view = view
-        , init = \_ -> init
+        , init = init
         , update = update
         , subscriptions = subscriptions
         }

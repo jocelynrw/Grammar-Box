@@ -4,7 +4,7 @@ import List.Extra exposing (getAt)
 import Browser
 import Html as H exposing (..)
 import Html.Attributes as HA exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onMouseUp)
 import Svg as S exposing (..)
 import Svg.Attributes as SA exposing (..)
 import Array
@@ -209,19 +209,22 @@ view ({ shapeGroup } as model) =
             sentences 
             |> String.split " " 
             |> List.map ( \word ->
-               tr[] [td ([HA.class "words", Draggable.mouseTrigger "my-element" DragMsg]
-            ++ Draggable.touchTriggers "my-element" DragMsg)  [H.text word] ])
+               tr[] [td [HA.class "words"
+            --    , Draggable.mouseTrigger "my-element" DragMsg]
+            -- ++ Draggable.touchTriggers "my-element" DragMsg)  
+               ]  [H.text word] ] )
             |> table [HA.id "wordstable"]
             --make this separate into only three rows and append the words into separate tables
         
-        wordtrial = div ([ HA.style "display" "flex"
+        wordtrial = div [ HA.style "display" "flex"
          , HA.style "padding" "16px"
          , HA.style "background-color" "lightgray"
          , HA.style "cursor" "move"
-         , HA.style "width" "64px"
+         , HA.style "width" "64px" ]
         --  , HA.style "transform" translate
-         , Draggable.mouseTrigger "word" DragMsg]
-            ++ Draggable.touchTriggers "word" DragMsg) [H.text "word"]
+        --  , Draggable.mouseTrigger "word" DragMsg]
+        --     ++ Draggable.touchTriggers "word" DragMsg) 
+         [H.text "word"]
 
         boxeshtml=
             boxes
@@ -265,18 +268,20 @@ view ({ shapeGroup } as model) =
             []]
             
         trinhtml = 
-            span ([ HA.style "cursor" "move"
+            span [ HA.style "cursor" "move"
                 -- , HA.style "transform" translate
-                , Draggable.mouseTrigger "blckTri" DragMsg]
-                    ++ Draggable.touchTriggers "blckTri" DragMsg) [svg[SA.height "130px", SA.width "80px"]
-                [polygon
-                    [points "0,80 80,80 40,0"
-                    , fill "black"
-                    , stroke "black"
-                    , strokeWidth "2"
+                , Draggable.mouseTrigger "trimove" DragMsg
+                , onMouseUp StopDragging]
+                    -- ++ Draggable.touchTriggers "trimove" DragMsg) 
+                    [svg [SA.height "130px", SA.width "80px"]
+                        [polygon
+                            [points "0,80 80,80 40,0"
+                            , fill "black"
+                            , stroke "black"
+                            , strokeWidth "2"
+                            ] []
+                        ]
                     ]
-                []]]
-            
         triadjhtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
                 [points "10,60 70,60 40,0"

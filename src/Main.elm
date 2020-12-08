@@ -33,6 +33,11 @@ type alias Position =
     {x : Float 
     , y : Float }
 
+{--Where does this show up in the position of the items????? 
+I need to find where this saves the position of the item
+it isn't coming from the Shape tyeps anymore...I need to access the Moving shapes list and 
+access the id of the shape.--}
+
 makeShape : Id -> Position -> Shape
 makeShape id position =
     Shape id position
@@ -68,6 +73,8 @@ allShapes { movingShape, idleShapes} =
     movingShape 
         |> Maybe.map (\a -> a :: idleShapes )
         |> Maybe.withDefault idleShapes 
+
+
 
 startDragging : Id -> ShapeGroup -> ShapeGroup
 startDragging id ( { idleShapes, movingShape} as group) =
@@ -269,8 +276,9 @@ view ({ shapeGroup } as model) =
             
         trinhtml = 
             span [ HA.style "cursor" "move"
+                , HA.style "top" (String.fromFloat shapeGroup.movingShapes.shape.position.y ++ "px") 
                 -- , HA.style "transform" translate
-                , Draggable.mouseTrigger "trimove" DragMsg
+                , Draggable.mouseTrigger id DragMsg
                 , onMouseUp StopDragging]
                     -- ++ Draggable.touchTriggers "trimove" DragMsg) 
                     [svg [SA.height "130px", SA.width "80px"]
@@ -282,6 +290,8 @@ view ({ shapeGroup } as model) =
                             ] []
                         ]
                     ]
+--need to programmatically place the shapes according to shapeView in the example program. 
+    
         triadjhtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
                 [points "10,60 70,60 40,0"

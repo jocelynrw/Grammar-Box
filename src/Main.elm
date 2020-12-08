@@ -275,12 +275,8 @@ view ({ shapeGroup } as model) =
             []]
             
         trinhtml = 
-            span [ HA.style "cursor" "move"
-                , HA.style "top" (String.fromFloat shapeGroup.movingShapes.shape.position.y ++ "px") 
+            span [ HA.style "cursor" "move"] 
                 -- , HA.style "transform" translate
-                , Draggable.mouseTrigger id DragMsg
-                , onMouseUp StopDragging]
-                    -- ++ Draggable.touchTriggers "trimove" DragMsg) 
                     [svg [SA.height "130px", SA.width "80px"]
                         [polygon
                             [points "0,80 80,80 40,0"
@@ -368,6 +364,30 @@ view ({ shapeGroup } as model) =
         ]]
 
 
+shapesView : ShapeGroup -> Svg Msg
+shapesView shapeGroup =
+    shapeGroup
+        |> allShapes
+        |> List.reverse
+        |> List.map shapeView
+        |> S.node "g" []
+
+
+shapeView : Shape -> Svg Msg
+shapeView { id, position } =
+    S.rect
+        [ num SA.width 100 --this is fake
+        , num SA.height 100
+        , num SA.x position.x
+        , num SA.y position.y
+        , Draggable.mouseTrigger id DragMsg
+        , onMouseUp StopDragging
+        ]
+        []
+
+num : (String -> S.Attribute msg) -> Float -> S.Attribute msg
+num attr value = 
+    attr (String.fromFloat value)
 
 ---- PROGRAM ----
 

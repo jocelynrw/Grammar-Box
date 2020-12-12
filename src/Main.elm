@@ -116,9 +116,9 @@ shapePositions : List Position
 shapePositions =
     let
         indexToPosition =
-            toFloat >> (*) 60 >> (+) 10 >> Position 10
+            toFloat >> (*) 60 >> (+) 10 >> (\x -> Position x 10)
     in
-    List.range 0 10 |> List.map indexToPosition
+    List.range 0 9 |> List.map indexToPosition
 
 init : flag -> ( Model, Cmd Msg )
 init _ = 
@@ -359,8 +359,17 @@ view ({ shapeGroup } as model) =
                 div [HA.class "bottomborder"] [boxeshtml]
             ,   div [] [wordshtml] --trouble here
             ]
+        ,   div [] [  H.p
+            [ HA.style "padding-left" "8px" ] [H.text "" ]
+        , S.svg
+            [ --SA.style "height: 100vh; width: 100vw; position: fixed"
+            ]
+            [ background, 
+            shapesView shapeGroup
+            ] ]
         ,   div [ HA.id "bottompanel" ] [
-            table[] [tr[] [td[] [trinhtml], td[] [triadjhtml], td[] [triarthtml], td[] [triphtml], td[] [circlehtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ] 
+            trinhtml
+            ,table[] [tr[] [td[] [], td[] [triadjhtml], td[] [triarthtml], td[] [triphtml], td[] [circlehtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ] 
         ]]
 
 
@@ -373,15 +382,38 @@ shapesView shapeGroup =
         |> S.node "g" []
 
 
-shapeView : Shape -> Svg Msg
-shapeView { id, position } =
-    S.rect
-        [ num SA.width 100 --this is fake
-        , num SA.height 100
-        , num SA.x position.x
+shapeView : Shape -> Html Msg --I changed this
+shapeView { id, position } =    
+        svg [SA.height "130px", SA.width "80px", num SA.x position.x
         , num SA.y position.y
         , Draggable.mouseTrigger id DragMsg
-        , onMouseUp StopDragging
+        , onMouseUp StopDragging]
+                        [polygon
+                            [points "0,80 80,80 40,0"
+                            , fill "black"
+                            , stroke "black"
+                            , strokeWidth "2"
+                            ] []
+                        ]
+                    
+
+        -- [ num SA.width 100 --this is fake
+        -- , num SA.height 100
+        -- , num SA.x position.x
+        -- , num SA.y position.y
+        -- , Draggable.mouseTrigger id DragMsg
+        -- , onMouseUp StopDragging
+        -- ]
+        -- []
+
+background : Svg msg
+background =
+    S.rect
+        [ SA.x "0"
+        , SA.y "0"
+        , SA.width "100%"
+        , SA.height "100%"
+        , SA.fill "#eee"
         ]
         []
 

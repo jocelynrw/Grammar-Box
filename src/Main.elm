@@ -120,6 +120,45 @@ shapePositions =
     in
     List.range 0 9 |> List.map indexToPosition
 
+listShapes : List (H.Attribute msg) -> List (S.Attribute msg) 
+listShapes =     
+    let
+        triadjhtml = svg 
+            [SA.height "130px" 
+            , SA.width "80px"
+            , num SA.x position.x
+            , num SA.y position.y
+            , Draggable.mouseTrigger id DragMsg
+            , onMouseUp StopDragging]
+                [polygon
+                    [points "10,60 70,60 40,0"
+                    , fill "darkblue"
+                    , stroke "darkblue"
+                    , strokeWidth "2"
+                    ]
+                []]
+
+        circlehtml = svg
+            [SA.height "130px"
+            , SA.width "90px"
+            , num SA.x position.x
+            , num SA.y position.y
+            , Draggable.mouseTrigger id DragMsg
+            , onMouseUp StopDragging]
+                [ circle
+                    [ cx "45"
+                    , cy "45"
+                    , r "40"
+                    , fill "red"
+                    , stroke "red"
+                    , strokeWidth "3"
+                    ]
+                []]
+   
+
+    in List.append [] 
+    
+
 init : flag -> ( Model, Cmd Msg )
 init _ = 
     ( { shapeGroup = makeShapeGroup shapePositions 

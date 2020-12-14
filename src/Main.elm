@@ -116,7 +116,7 @@ shapePositions : List Position
 shapePositions =
     let
         indexToPosition =
-            toFloat >> (*) 60 >> (+) 10 >> (\x -> Position x 10)
+            toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
     in
     List.range 0 9 |> List.map indexToPosition
 
@@ -411,7 +411,7 @@ background =
     S.rect
         [ SA.x "0"
         , SA.y "0"
-        , SA.width "100%"
+        , SA.width "500px"
         , SA.height "100%"
         , SA.fill "#eee"
         ]

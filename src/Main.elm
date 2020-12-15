@@ -1,5 +1,5 @@
 module Main exposing (..)
-import List.Extra exposing (getAt) 
+import List.Extra exposing (getAt)
 --somehow not working
 import Browser
 import Html as H exposing (..)
@@ -20,83 +20,77 @@ subscriptions {drag} =
     Draggable.subscriptions DragMsg drag
 
 
----- MODEL ----    
-type alias Shape = 
+---- MODEL ----
+type alias Shape =
     {id: Id
     , position : Position
     }
 
-type alias Id = 
+type alias Id =
     String
 
-type alias Position = 
-    {x : Float 
+type alias Position =
+    {x : Float
     , y : Float }
-
-{--Where does this show up in the position of the items????? 
-I need to find where this saves the position of the item
-it isn't coming from the Shape tyeps anymore...I need to access the Moving shapes list and 
-access the id of the shape.--}
 
 makeShape : Id -> Position -> Shape
 makeShape id position =
     Shape id position
 
 dragShapeBy : Position -> Shape -> Shape
-dragShapeBy delta shape = 
+dragShapeBy delta shape =
     { shape | position = Position (shape.position.x + delta.x)
      (shape.position.y + delta.y) }
----this is fake but it's temporary
 
-type alias ShapeGroup = 
-    {uid : Int 
+type alias ShapeGroup =
+    {uid : Int
     , movingShape : Maybe Shape
     , idleShapes : List Shape}
 
 emptyGroup : ShapeGroup
-emptyGroup = 
-    ShapeGroup 0 Nothing [] 
+emptyGroup =
+    ShapeGroup 0 Nothing []
 
-addShape : Position -> ShapeGroup -> ShapeGroup  
-addShape position ({ uid, idleShapes } as group) = 
+addShape : Position -> ShapeGroup -> ShapeGroup
+addShape position ({ uid, idleShapes } as group) =
     { group
         | idleShapes = makeShape (String.fromInt uid) position :: idleShapes
         , uid = uid + 1}
 
 makeShapeGroup : List Position -> ShapeGroup
-makeShapeGroup positions = 
+makeShapeGroup positions =
     positions
-        |>List.foldl addShape emptyGroup 
+        |>List.foldl addShape emptyGroup
 
 allShapes : ShapeGroup -> List Shape
 allShapes { movingShape, idleShapes} =
-    movingShape 
+    movingShape
         |> Maybe.map (\a -> a :: idleShapes )
-        |> Maybe.withDefault idleShapes 
+        |> Maybe.withDefault idleShapes
 
 
 
 startDragging : Id -> ShapeGroup -> ShapeGroup
 startDragging id ( { idleShapes, movingShape} as group) =
-    let 
+    let
         ( targetAsList, others) =
             List.partition (.id >> (==) id) idleShapes
-    
-    in 
-    { group 
-        | idleShapes = others 
+
+    in
+    { group
+        | idleShapes = others
         , movingShape = targetAsList |> List.head
     }
 
-stopDragging : ShapeGroup -> ShapeGroup 
-stopDragging group = 
-    { group 
-        | idleShapes = allShapes group 
-        , movingShape = Nothing 
+stopDragging : ShapeGroup -> ShapeGroup
+stopDragging group =
+    { group
+        | idleShapes = allShapes group
+        , movingShape = Nothing
     }
 
-dragActiveBy : Position -> ShapeGroup -> ShapeGroup 
-dragActiveBy delta group = 
+dragActiveBy : Position -> ShapeGroup -> ShapeGroup
+dragActiveBy delta group =
     { group | movingShape = group.movingShape |> Maybe.map (dragShapeBy delta) }
 
 
@@ -113,65 +107,27 @@ type alias Model =
 --currentPhrase = Array.get 0 myArray
 
 shapePositions : List Position
-shapePositions =
-    let
-        indexToPosition =
-            toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
-    in
-    List.range 0 9 |> List.map indexToPosition
+shapePositions = [Position 0 0, Position 80 0]
+--     let
+--         indexToPosition =
+--             toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
+--     in
+--     List.range 0 9 |> List.map indexToPosition
 
-listShapes : List (H.Attribute msg) -> List (S.Attribute msg) 
-listShapes =     
-    let
-        triadjhtml = svg 
-            [SA.height "130px" 
-            , SA.width "80px"
-            , num SA.x position.x
-            , num SA.y position.y
-            , Draggable.mouseTrigger id DragMsg
-            , onMouseUp StopDragging]
-                [polygon
-                    [points "10,60 70,60 40,0"
-                    , fill "darkblue"
-                    , stroke "darkblue"
-                    , strokeWidth "2"
-                    ]
-                []]
-
-        circlehtml = svg
-            [SA.height "130px"
-            , SA.width "90px"
-            , num SA.x position.x
-            , num SA.y position.y
-            , Draggable.mouseTrigger id DragMsg
-            , onMouseUp StopDragging]
-                [ circle
-                    [ cx "45"
-                    , cy "45"
-                    , r "40"
-                    , fill "red"
-                    , stroke "red"
-                    , strokeWidth "3"
-                    ]
-                []]
-   
-
-    in List.append [] 
-    
 
 init : flag -> ( Model, Cmd Msg )
-init _ = 
-    ( { shapeGroup = makeShapeGroup shapePositions 
-        , drag = Draggable.init } 
+init _ =
+    ( { shapeGroup = makeShapeGroup shapePositions
+        , drag = Draggable.init }
         , Cmd.none
     )
 
 
-    -- let 
+    -- let
     --     sentences = ["the red house", "that big barn", "a furry cat"]
     -- in
     --     ({ phrases = Array.fromList sentences,
-    --     currentPhrase = List.head sentences, 
+    --     currentPhrase = List.head sentences,
     --     xy = Position 100 100, drag = Draggable.init},
     --     Cmd.none)
 
@@ -189,13 +145,13 @@ wordd = "hello"
 
 
 type Msg
-    = Back 
+    = Back
     | Forward
-    | None 
-    | OnDragBy Position --weird still 
+    | None
+    | OnDragBy Position --weird still
     | DragMsg (Draggable.Msg Id)
     | StartDragging String
-    | StopDragging 
+    | StopDragging
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -203,12 +159,12 @@ update msg ({ shapeGroup } as model) =
     case msg of
         OnDragBy delta ->
             ( { model | shapeGroup = shapeGroup |> dragActiveBy delta }, Cmd.none )
-        
+
         -- ( dx, dy ) ->
         --     ( { model | xy = Position (xy.x + dx) (xy.y + dy)  }, Cmd.none )
         DragMsg dragMsg ->
             Draggable.update dragConfig dragMsg model
-        
+
         StartDragging id ->
                 ( { model | shapeGroup = shapeGroup |> startDragging id }, Cmd.none )
 
@@ -217,13 +173,13 @@ update msg ({ shapeGroup } as model) =
 
         _ ->
             (model, Cmd.none)
-        
+
 
 dragConfig : Draggable.Config Id Msg
 dragConfig =
-    Draggable.customConfig 
-        [ onDragBy (\( dx, dy ) -> Position dx dy |> OnDragBy ) 
-        , onDragStart StartDragging 
+    Draggable.customConfig
+        [ onDragBy (\( dx, dy ) -> Position dx dy |> OnDragBy )
+        , onDragStart StartDragging
         ]
 
 
@@ -233,35 +189,21 @@ dragConfig =
 view : Model -> Html Msg
 view ({ shapeGroup } as model) =
     let
-
-        -- translate =
-        --     "translate(" ++ String.fromFloat position.x ++ "px, " ++ String.fromFloat shapeGroup.position.y ++ "px)"
-
--- 8. Triggering drag
--- Inside your view function, you must somehow make the element draggable. You do that by adding a trigger for the mousedown event. You must also specify a key for that element. This can be useful when there are multiple drag targets in the same view.
-
--- Of course, you'll also have to style your DOM element such that it reflects its moving position (with top: x; left: y or transform: translate)
-        -- sentence = case model.currentPhrase of
-        --     Nothing ->
-        --         ""
-        --     Just p ->
-        --         p
-
         phrasehtml = div [HA.id "phrases"] [H.text "the end"]
 
-        sentences = "the end" 
+        sentences = "the end"
         -- String.join " " (Array.toList phrases)
         wordshtml =
-            sentences 
-            |> String.split " " 
+            sentences
+            |> String.split " "
             |> List.map ( \word ->
                tr[] [td [HA.class "words"
             --    , Draggable.mouseTrigger "my-element" DragMsg]
-            -- ++ Draggable.touchTriggers "my-element" DragMsg)  
+            -- ++ Draggable.touchTriggers "my-element" DragMsg)
                ]  [H.text word] ] )
             |> table [HA.id "wordstable"]
             --make this separate into only three rows and append the words into separate tables
-        
+
         wordtrial = div [ HA.style "display" "flex"
          , HA.style "padding" "16px"
          , HA.style "background-color" "lightgray"
@@ -269,37 +211,26 @@ view ({ shapeGroup } as model) =
          , HA.style "width" "64px" ]
         --  , HA.style "transform" translate
         --  , Draggable.mouseTrigger "word" DragMsg]
-        --     ++ Draggable.touchTriggers "word" DragMsg) 
+        --     ++ Draggable.touchTriggers "word" DragMsg)
          [H.text "word"]
 
         boxeshtml=
             boxes
             |> List.map (\word -> li[] [button[ HA.id "grammarboxes" ] [H.text word]])
-            |> ul [ HA.id "allboxes"] 
-        
+            |> ul [ HA.id "allboxes"]
+
         --gbtitleb= div[HA.class "title"] [String "Grammar Boxes"]
         --navpanel = button[ onClick "openNav()" ] [H.text "Open"]
 
-        circlehtml = svg
-            [SA.height "130px", SA.width "90px"]
-            [ circle
-                [ cx "45"
-                , cy "45"
-                , r "40"
-                , fill "red"
-                , stroke "red"
-                , strokeWidth "3"
-                ]
-                []]
         creshtml = svg [SA.width "80px", SA.height "130px"]
-            [S.path  
+            [S.path
                 [d "m 30.034 22.3328 c -12.8744 4.06804 -21.9608 15.9459 -21.9254 28.6609 c 0.03536 12.6782 3.28112 16.2321 7.47444 8.18427 c 11.1244 -21.3503 42.5863 -20.4773 49.4476 1.37219 c 1.3828 4.40366 5.09983 3.02741 6.35778 -2.35374 c 5.27362 -22.56 -18.4226 -43.1099 -41.3544 -35.8637"
                 , fill "#007f00"
                 , stroke "#007f00"
                 , strokeWidth "3"
 
             ]
-            
+
             [ ]]
         recthtml = svg[SA.height "130px", SA.width "80px"]
             [rect
@@ -312,9 +243,9 @@ view ({ shapeGroup } as model) =
                 , strokeWidth "2"
                 ]
             []]
-            
-        trinhtml = 
-            span [ HA.style "cursor" "move"] 
+
+        trinhtml =
+            span [ HA.style "cursor" "move"]
                 -- , HA.style "transform" translate
                     [svg [SA.height "130px", SA.width "80px"]
                         [polygon
@@ -325,17 +256,7 @@ view ({ shapeGroup } as model) =
                             ] []
                         ]
                     ]
---need to programmatically place the shapes according to shapeView in the example program. 
-    
-        triadjhtml = svg[SA.height "130px", SA.width "80px"]
-            [polygon
-                [points "10,60 70,60 40,0"
-                , fill "darkblue"
-                , stroke "darkblue"
-                , strokeWidth "2"
-                ]
-            []]
-        
+
         triarthtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
                 [points "20,40 60,40 40,0"
@@ -345,7 +266,7 @@ view ({ shapeGroup } as model) =
                 ]
             []]
         -- trianglehtml = picture [triangle green 150]
-        
+
         triphtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
                 [points "20,80 60,80 40,0"
@@ -374,25 +295,25 @@ view ({ shapeGroup } as model) =
                 ]
                 []]
 
-        arrowLhtml = svg [SA.height "30px", SA.width "30px"] 
+        arrowLhtml = svg [SA.height "30px", SA.width "30px"]
             [ S.path[
                 d "M 19 4 L 18 4.57227 L 5 12 L 18 19.4277 L 19 20 L 19 18.8438 L 19 5 L 19 4 Z M 18 5.58398 L 18 18.2715 L 7.02344 12 L 18 5.58398 Z"
                 , stroke "darkslategray"
-                , fill "darkslategray"        
+                , fill "darkslategray"
                 ]
             []]
-        arrowRhtml = svg [SA.height "30px", SA.width "30px", SA.transform "scale(-1, 1)"] 
+        arrowRhtml = svg [SA.height "30px", SA.width "30px", SA.transform "scale(-1, 1)"]
             [ S.path[
                 d "M 24.695 12.912 L 13.718 19.328 L 24.695 25.599 L 24.695 12.912 Z M 25.695 11.328 L 25.695 12.328 L 25.695 26.172 L 25.695 27.328 L 24.695 26.756 L 11.695 19.328 L 24.695 11.9 L 25.695 11.328 Z"
                 , stroke "darkslategray"
-                , fill "darkslategray"        
+                , fill "darkslategray"
                 ]
             []]
 
     in
     div []
         [   h1 [] [table [] [tr [] [ td[] [arrowLhtml], td[HA.id "sentence"] [phrasehtml], td[HA.id "right"] [arrowRhtml]] ]]
---TO DO: Line up Arrows
+--TODO: Line up Arrows
         ,   span [] [wordtrial]
         ,   div [ HA.id "sidebar"] [ H.text "Grammar Boxes",
                 div [HA.class "bottomborder"] [boxeshtml]
@@ -403,12 +324,12 @@ view ({ shapeGroup } as model) =
         , S.svg
             [ --SA.style "height: 100vh; width: 100vw; position: fixed"
             ]
-            [ background, 
+            [ background,
             shapesView shapeGroup
             ] ]
         ,   div [ HA.id "bottompanel" ] [
             trinhtml
-            ,table[] [tr[] [td[] [], td[] [triadjhtml], td[] [triarthtml], td[] [triphtml], td[] [circlehtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ] 
+            ,table[] [tr[] [td[] [], td[] [triarthtml], td[] [triphtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ]
         ]]
 
 
@@ -421,20 +342,48 @@ shapesView shapeGroup =
         |> S.node "g" []
 
 
-shapeView : Shape -> Html Msg --I changed this
-shapeView { id, position } =    
+shapeView : Shape -> Html Msg
+shapeView { id, position } =
         svg [SA.height "130px", SA.width "80px", num SA.x position.x
         , num SA.y position.y
         , Draggable.mouseTrigger id DragMsg
         , onMouseUp StopDragging]
-                        [polygon
-                            [points "0,80 80,80 40,0"
-                            , fill "black"
-                            , stroke "black"
-                            , strokeWidth "2"
-                            ] []
-                        ]
-                    
+                        [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) listShapes)]
+       --     polygon
+        --                     [points "0,80 80,80 40,0"
+        --                     , fill "black"
+        --                     , stroke "black"
+        --                     , strokeWidth "2"
+        --                     ] []
+        --                 ]
+
+listShapes : Array.Array (Svg msg)
+listShapes =
+    let
+        triadjhtml =
+                polygon
+                    [points "10,60 70,60 40,0"
+                    , fill "darkblue"
+                    , stroke "darkblue"
+                    , strokeWidth "2"
+                    ]
+                []
+
+        circlehtml =
+                circle
+                    [ cx "40"
+                    , cy "40"
+                    , r "35"
+                    , fill "red"
+                    , stroke "red"
+                    , strokeWidth "3"
+                    ]
+                []
+
+
+    in Array.fromList [triadjhtml, circlehtml]
+
+
 
         -- [ num SA.width 100 --this is fake
         -- , num SA.height 100
@@ -457,7 +406,7 @@ background =
         []
 
 num : (String -> S.Attribute msg) -> Float -> S.Attribute msg
-num attr value = 
+num attr value =
     attr (String.fromFloat value)
 
 ---- PROGRAM ----
@@ -471,4 +420,3 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-

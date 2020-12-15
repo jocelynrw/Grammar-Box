@@ -108,27 +108,27 @@ div.bottomborder{
 
 #bottompanel {
   border: 1px solid rgba(160, 160, 160, 0.349);
-  height: 20%; /* 100% Full-height */
+  height: 50%; /* 100% Full-height */
   width: 75%; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
   /* z-index: 1; Stay on top */
-  bottom: 0; 
+  bottom: 0;
   left: 0 px;
   padding-top: 10px;
   margin-left: 20px;
   -webkit-user-drag: element;
-  
+
 }
 
 #sentence {
   width: 80%
- 
- 
+
+
 }
 #phrases > svg {
   padding: 5px;
-  margin: 5px; 
-  display: inline;  
+  margin: 5px;
+  display: inline;
 }
 
 #right {
@@ -155,7 +155,7 @@ th, tr, td {
 #grammarboxes{
   background-color: firebrick;
   color: lightgreen;
-  top: 
+  /*top:*/
 }
 
 th, tr, td#words {
@@ -167,16 +167,6 @@ th, tr, td#words {
   padding: 5px;
   margin: 15px;
   display: in-line;
-  
-  
 }
 
-#bottompanel > td {
-  
-}
-
-#bottompanel > table
-{
-  margin-left: max(25px, 5%);
-}
 /* future project, fix the coding of the shapes panel to be more responsive*/

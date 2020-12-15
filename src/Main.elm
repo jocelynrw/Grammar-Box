@@ -107,12 +107,12 @@ type alias Model =
 --currentPhrase = Array.get 0 myArray
 
 shapePositions : List Position
-shapePositions = [Position 0 0, Position 80 0, Position 160 0]
---     let
---         indexToPosition =
---             toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
---     in
---     List.range 0 9 |> List.map indexToPosition
+shapePositions = --[Position 0 0, Position 80 0, Position 160 0]
+    let
+        indexToPosition =
+            toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
+    in
+    List.range 0 8 |> List.map indexToPosition
 
 
 init : flag -> ( Model, Cmd Msg )
@@ -222,67 +222,6 @@ view ({ shapeGroup } as model) =
         --gbtitleb= div[HA.class "title"] [String "Grammar Boxes"]
         --navpanel = button[ onClick "openNav()" ] [H.text "Open"]
 
-        creshtml = svg [SA.width "80px", SA.height "130px"]
-            [S.path
-                [d "m 30.034 22.3328 c -12.8744 4.06804 -21.9608 15.9459 -21.9254 28.6609 c 0.03536 12.6782 3.28112 16.2321 7.47444 8.18427 c 11.1244 -21.3503 42.5863 -20.4773 49.4476 1.37219 c 1.3828 4.40366 5.09983 3.02741 6.35778 -2.35374 c 5.27362 -22.56 -18.4226 -43.1099 -41.3544 -35.8637"
-                , fill "#007f00"
-                , stroke "#007f00"
-                , strokeWidth "3"
-
-            ]
-
-            [ ]]
-        recthtml = svg[SA.height "130px", SA.width "80px"]
-            [rect
-                [ x "0"
-                , y "42"
-                , SA.width "80"
-                , SA.height "10"
-                , fill "pink"
-                , stroke "pink"
-                , strokeWidth "2"
-                ]
-            []]
-
-
-        triarthtml = svg[SA.height "130px", SA.width "80px"]
-            [polygon
-                [points "20,40 60,40 40,0"
-                , fill "skyblue"
-                , stroke "skyblue"
-                , strokeWidth "2"
-                ]
-            []]
-        -- trianglehtml = picture [triangle green 150]
-
-        triphtml = svg[SA.height "130px", SA.width "80px"]
-            [polygon
-                [points "20,80 60,80 40,0"
-                , fill "purple"
-                , stroke "purple"
-                , strokeWidth "2"
-                ]
-            []]
-        circlephtml = svg
-            [SA.height "130px", SA.width "90px"]
-            [ circle
-                [ cx "45"
-                , cy "45"
-                , r "20"
-                , fill "orange"
-                , stroke "orange"
-                , strokeWidth "3"
-                ]
-                []]
-        keyholehtml = svg [SA.height "130px", SA.width "80px", transform "scale(.7)"]
-            [S.path
-                [d "m 10.9173 23.0741 c 0.16702 0.47855 16.2158 53.3224 16.3923 53.9745 c 0.12486 0.46222 -0.00207 0.57534 -1.34097 1.19328 c -16.9309 7.81425 -20.2246 29.4483 -6.32289 41.529 c 21.9109 19.041 57.4778 -1.1025 47.8134 -27.0795 c -2.24286 -6.02826 -8.71964 -12.7444 -14.2862 -14.8145 c -0.64526 -0.2399 -0.72543 -0.34806 -0.5978 -0.808 c 0.19742 -0.71059 16.2444 -53.5383 16.4015 -53.9948 c 0.1168 -0.33896 -1.37 -0.35736 -29.0304 -0.35736 c -27.6614 0 -29.1472 0.01841 -29.0288 0.35736"
-                , stroke "rgb(211, 199, 94)"
-                , fill "rgb(255,255,0)"
-                , strokeWidth "3"
-                ]
-                []]
-
         arrowLhtml = svg [SA.height "30px", SA.width "30px"]
             [ S.path[
                 d "M 19 4 L 18 4.57227 L 5 12 L 18 19.4277 L 19 20 L 19 18.8438 L 19 5 L 19 4 Z M 18 5.58398 L 18 18.2715 L 7.02344 12 L 18 5.58398 Z"
@@ -309,17 +248,16 @@ view ({ shapeGroup } as model) =
                 div [HA.class "bottomborder"] [boxeshtml]
             ,   div [] [wordshtml] --trouble here
             ]
-        ,   div [] [  H.p
-            [ HA.style "padding-left" "8px" ] [H.text "" ]
-        , S.svg
-            [ SA.style "height: 800px; width: 800px; position: fixed"
-            ]
-            [ background,
-            shapesView shapeGroup
-            ] ]
+        ,   div [] [ ]
         ,   div [ HA.id "bottompanel" ] [
-            table[] [tr[] [td[] [], td[] [triarthtml], td[] [triphtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ]
-        ]]
+                table [] [
+                    tr []   [ S.svg
+                                [ SA.style "height: 800px; width: 800px; position: fixed" ]
+                                [ shapesView shapeGroup ]
+                            ]
+                        ]
+                    ]
+        ]
 
 
 shapesView : ShapeGroup -> Svg Msg
@@ -339,7 +277,7 @@ shapeView { id, position } =
         , Draggable.mouseTrigger id DragMsg
         , onMouseUp StopDragging]
                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) listShapes)]
-
+--TODO: want the shapes to stick to the bottom
 
 listShapes : Array.Array (Svg msg)
 listShapes =
@@ -363,6 +301,15 @@ listShapes =
                     ]
                 []
 
+        triarthtml =
+                polygon
+                    [points "20,40 60,40 40,0"
+                    , fill "skyblue"
+                    , stroke "skyblue"
+                    , strokeWidth "2"
+                    ]
+                []
+
         circlehtml =
                 circle
                     [ cx "40"
@@ -374,9 +321,62 @@ listShapes =
                     ]
                 []
 
+        circleadvhtml =
+                circle
+                    [ cx "45"
+                    , cy "45"
+                    , r "20"
+                    , fill "orange"
+                    , stroke "orange"
+                    , strokeWidth "3"
+                    ]
+                []
 
-    in Array.fromList [trinhtml, triadjhtml, circlehtml]
+        creshtml =
+                S.path
+                    [d "m 30.034 22.3328 c -12.8744 4.06804 -21.9608 15.9459 -21.9254 28.6609 c 0.03536 12.6782 3.28112 16.2321 7.47444 8.18427 c 11.1244 -21.3503 42.5863 -20.4773 49.4476 1.37219 c 1.3828 4.40366 5.09983 3.02741 6.35778 -2.35374 c 5.27362 -22.56 -18.4226 -43.1099 -41.3544 -35.8637"
+                    , fill "#007f00"
+                    , stroke "#007f00"
+                    , strokeWidth "3"
+                    ]
+                []
 
+        triphtml =
+                polygon
+                    [points "20,80 60,80 40,0"
+                    , fill "purple"
+                    , stroke "purple"
+                    , strokeWidth "2"
+                    ]
+                []
+
+        recthtml =
+                rect
+                    [ x "0"
+                    , y "42"
+                    , SA.width "80"
+                    , SA.height "10"
+                    , fill "pink"
+                    , stroke "pink"
+                    , strokeWidth "2"
+                    ]
+                []
+
+        keyholehtml =
+        --[transform "scale(.7)"]
+                    --[
+                S.path
+                    [d "m 10.9173 23.0741 c 0.16702 0.47855 16.2158 53.3224 16.3923 53.9745 c 0.12486 0.46222 -0.00207 0.57534 -1.34097 1.19328 c -16.9309 7.81425 -20.2246 29.4483 -6.32289 41.529 c 21.9109 19.041 57.4778 -1.1025 47.8134 -27.0795 c -2.24286 -6.02826 -8.71964 -12.7444 -14.2862 -14.8145 c -0.64526 -0.2399 -0.72543 -0.34806 -0.5978 -0.808 c 0.19742 -0.71059 16.2444 -53.5383 16.4015 -53.9948 c 0.1168 -0.33896 -1.37 -0.35736 -29.0304 -0.35736 c -27.6614 0 -29.1472 0.01841 -29.0288 0.35736"
+                    , stroke "rgb(211, 199, 94)"
+                    , fill "rgb(255,255,0)"
+                    , strokeWidth "3"
+                    , transform "scale(.7)"]
+                []
+                        --]
+
+    in Array.fromList [trinhtml, triadjhtml, triarthtml, circlehtml, circleadvhtml, creshtml, triphtml, recthtml, keyholehtml]
+
+--TODO: Keyhole doesn't show yet
 
 
         -- [ num SA.width 100 --this is fake
@@ -393,8 +393,8 @@ background =
     S.rect
         [ SA.x "0"
         , SA.y "0"
-        , SA.width "800px"
-        , SA.height "500px"
+        , SA.width "100%"
+        --, SA.height "200px"
         , SA.fill "#eee"
         ]
         []

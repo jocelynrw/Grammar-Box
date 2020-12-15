@@ -107,7 +107,7 @@ type alias Model =
 --currentPhrase = Array.get 0 myArray
 
 shapePositions : List Position
-shapePositions = [Position 0 0, Position 80 0]
+shapePositions = [Position 0 0, Position 80 0, Position 160 0]
 --     let
 --         indexToPosition =
 --             toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
@@ -244,18 +244,6 @@ view ({ shapeGroup } as model) =
                 ]
             []]
 
-        trinhtml =
-            span [ HA.style "cursor" "move"]
-                -- , HA.style "transform" translate
-                    [svg [SA.height "130px", SA.width "80px"]
-                        [polygon
-                            [points "0,80 80,80 40,0"
-                            , fill "black"
-                            , stroke "black"
-                            , strokeWidth "2"
-                            ] []
-                        ]
-                    ]
 
         triarthtml = svg[SA.height "130px", SA.width "80px"]
             [polygon
@@ -314,7 +302,9 @@ view ({ shapeGroup } as model) =
     div []
         [   h1 [] [table [] [tr [] [ td[] [arrowLhtml], td[HA.id "sentence"] [phrasehtml], td[HA.id "right"] [arrowRhtml]] ]]
 --TODO: Line up Arrows
-        ,   span [] [wordtrial]
+        ,   span [] [
+            --wordtrial
+            ]
         ,   div [ HA.id "sidebar"] [ H.text "Grammar Boxes",
                 div [HA.class "bottomborder"] [boxeshtml]
             ,   div [] [wordshtml] --trouble here
@@ -322,14 +312,13 @@ view ({ shapeGroup } as model) =
         ,   div [] [  H.p
             [ HA.style "padding-left" "8px" ] [H.text "" ]
         , S.svg
-            [ --SA.style "height: 100vh; width: 100vw; position: fixed"
+            [ SA.style "height: 800px; width: 800px; position: fixed"
             ]
             [ background,
             shapesView shapeGroup
             ] ]
         ,   div [ HA.id "bottompanel" ] [
-            trinhtml
-            ,table[] [tr[] [td[] [], td[] [triarthtml], td[] [triphtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ]
+            table[] [tr[] [td[] [], td[] [triarthtml], td[] [triphtml], td[] [creshtml], td[] [circlephtml], td[] [recthtml], td[] [keyholehtml] ] ]
         ]]
 
 
@@ -346,20 +335,25 @@ shapeView : Shape -> Html Msg
 shapeView { id, position } =
         svg [SA.height "130px", SA.width "80px", num SA.x position.x
         , num SA.y position.y
+        , HA.style "cursor" "move"
         , Draggable.mouseTrigger id DragMsg
         , onMouseUp StopDragging]
                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) listShapes)]
-       --     polygon
-        --                     [points "0,80 80,80 40,0"
-        --                     , fill "black"
-        --                     , stroke "black"
-        --                     , strokeWidth "2"
-        --                     ] []
-        --                 ]
+
 
 listShapes : Array.Array (Svg msg)
 listShapes =
     let
+        trinhtml =
+                polygon
+                    [points "0,80 80,80 40,0"
+                    , fill "black"
+                    , stroke "black"
+                    , strokeWidth "2"
+                    ]
+                []
+
+
         triadjhtml =
                 polygon
                     [points "10,60 70,60 40,0"
@@ -381,7 +375,7 @@ listShapes =
                 []
 
 
-    in Array.fromList [triadjhtml, circlehtml]
+    in Array.fromList [trinhtml, triadjhtml, circlehtml]
 
 
 
@@ -399,8 +393,8 @@ background =
     S.rect
         [ SA.x "0"
         , SA.y "0"
-        , SA.width "500px"
-        , SA.height "100%"
+        , SA.width "800px"
+        , SA.height "500px"
         , SA.fill "#eee"
         ]
         []

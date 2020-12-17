@@ -163,10 +163,11 @@ th, tr, td#words {
   text-align: left;
 }
 
-#bottompanel > svg {
-  padding: 5px;
-  margin: 15px;
+#bottompanel > svg.g {
+  /* padding: 5px;
+  margin: 15px; */
   display: in-line;
+  margin-bottom: 5px;
 
 }
 

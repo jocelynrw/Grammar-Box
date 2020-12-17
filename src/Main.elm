@@ -249,14 +249,14 @@ view ({ shapeGroup } as model) =
             ,   div [] [wordshtml] --trouble here
             ]
         ,   div [] [ ]
-        ,   div [ HA.id "bottompanel" ] [
-                table [] [
-                    tr []   [ S.svg
-                                [ SA.style "height: 800px; width: 800px; position: fixed" ]
+        ,   div [ HA.id "bottompanel" ]
+                  [ div [SA.style "height: 200px"] []
+                     , S.svg
+                                [ SA.id "shapes", SA.style "height: 200px; width: 100%; position: fixed" ]
                                 [ shapesView shapeGroup ]
                             ]
-                        ]
-                    ]
+
+
         ]
 
 
@@ -268,6 +268,7 @@ shapesView shapeGroup =
         |> List.map shapeView
         |> S.node "g" []
 
+--I need to find a way to get the svg images to go lower. I tried adding a div ahead of it, but it didn't work..
 
 shapeView : Shape -> Html Msg
 shapeView { id, position } =

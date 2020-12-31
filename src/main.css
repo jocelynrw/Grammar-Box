@@ -11,9 +11,6 @@
 
 body {
   font-family: 'Calibri', 'Lucida Grande', 'Trebuchet MS', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
-  margin: 0;
-  text-align: left;
-  color: #000000;
   font-size: larger;
   font-weight: bold;
 }
@@ -26,76 +23,70 @@ h1 {
   border: 1px solid rgb(128, 128, 128);
 }
 
-h2 {
-  font-size: 20px;
+table#top{
+  width: 100%;
 }
 
-img {
-  margin: 50px 0;
-  max-width: 200px;
+td#right, td#left{
+  padding-top: 15px;
 }
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+ul#boxes {
+  padding: 5px 5px;
+  margin: 5px;
 }
 
 li {
   display: inline;
   padding: 5px;
-  margin: 5px;
+  /*margin: 5px 5px;*/
 }
-
+/*
 div.bottomborder{
   background-color: darkturquoise;
   border-bottom: 10px, solid, darkslategrey;
   padding: 5px;
 }
 
-#sidebar {
-  height: 100%; /* 100% Full-height */
-  width: 20%; /* 0 width - change this with JavaScript */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Stay on top */
-  right: 5px;
-  top: 5px;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid rgba(160, 160, 160, 0.349);
-  overflow-x: scroll;
-  padding-top: 10px;
-  transition: 0.5s;
-  padding-left: 15px;
+*/
+nav {
+border-bottom: 2px solid black;
+position: absolute;
+right: 10px;
+top: 15px;
+width: 20%;
+padding: 5px;
 }
 
-/* Position and style the close button (top right corner) */
-#sidebar .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-  background-color: rgba(255, 255, 255, 0.274);
+/* nav>button{
+
+} */
+
+#grammarboxes{
+  background-color: lightgray;
+  color: black;
+  font-weight: bold;
+  font-size: small;
 }
 
-/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-@media screen and (max-height: 450px) {
-  #sidebar {padding-top: 15px;}
-  #sidebar a {font-size: 18px;}
-}
-
-#wordstable {
+/* why can't the border show */
+table, th, td {
+  /*height: 80%;
+  left: 15px; */
   border-collapse: collapse;
-  border: black;
+  border: 2px solid black;
 }
-/* why won't this work*/
+
+/*Add a container element (like <div>) with overflow-x:auto around
+the <table> element to make it responsive:*/
 
 .words{
-  background: cornflowerblue;
+  background: lightgray;
   display: block;
-  width: fit-content;
-  padding: auto;
+  width: auto;
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
  /* -webkit-user-select: none;
  -khtml-user-select: none;
  -webkit-touch-callout: none;
@@ -105,70 +96,58 @@ div.bottomborder{
  -webkit-user-drag: element; */
 }
 
+/* this is not changing anything */
 
-#bottompanel {
+/*svg.g {
   border: 1px solid rgba(160, 160, 160, 0.349);
-  height: 50%; /* 100% Full-height */
-  width: 75%; /* 0 width - change this with JavaScript */
-  position: fixed; /* Stay in place */
-  /* z-index: 1; Stay on top */
+  height: 50%;
+  width: 75%;
+  position: fixed;
+  z-index: 1;
   bottom: 0;
   left: 0 px;
   padding-top: 10px;
   margin-left: 20px;
-  -webkit-user-drag: element;
 
-}
-
-#sentence {
-  width: 80%
+} */
 
 
-}
-#phrases > svg {
-  padding: 5px;
-  margin: 5px;
-  display: inline;
-}
-
-#right {
-  margin-right: min(15px, 5%);
-
-}
-
-table {
-  height: 80%;
-  left: 15px;
-  border-collapse: collapse;
-  border-color: black;
-}
-/*Add a container element (like <div>) with overflow-x:auto around the <table> element to make it responsive:*/
-
-th, tr, td {
-  vertical-align: center;
-  text-align: center;
-  width: 100px;
+/*#bottompanel > svg.g {
+   padding: 5px;
   margin: 15px;
-  padding: 15px;
-}
-
-#grammarboxes{
-  background-color: firebrick;
-  color: lightgreen;
-  /*top:*/
-}
-
-th, tr, td#words {
-  vertical-align: left;
-  text-align: left;
-}
-
-#bottompanel > svg.g {
-  /* padding: 5px;
-  margin: 15px; */
-  display: in-line;
+  /display: in-line;
   margin-bottom: 5px;
 
-}
+} */
 
 /* future project, fix the coding of the shapes panel to be more responsive*/
+
+/* #sidebar {
+  height: 90%;
+  width: 20%;
+  position: fixed;
+  z-index: 1;
+  right: 5px;
+  bottom: 5px;
+  border: 1px solid rgba(160, 160, 160, 0.349);
+  overflow-x: scroll;
+  padding-top: 10px;
+  padding-left: 15px;
+} */
+
+/* Position and style the close button (top right corner) */
+/*#sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+  background-color: rgba(255, 255, 255, 0.274);
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+/* @media screen and (max-height: 450px) {
+  #sidebar {padding-top: 15px;}
+  #sidebar a {font-size: 18px;}
+}
+*/

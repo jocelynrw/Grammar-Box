@@ -93,18 +93,16 @@ dragActiveBy : Position -> ShapeGroup -> ShapeGroup
 dragActiveBy delta group =
     { group | movingShape = group.movingShape |> Maybe.map (dragShapeBy delta) }
 
-
-
+phrases : List String
+phrases = ["the red house", "that big barn", "a furry cat"]
 
 type alias Model =
     { shapeGroup : ShapeGroup
     , drag : Draggable.State Id
+    , currentPhrase : Maybe String
     }
-    -- {currentPhrase : Maybe String,
-    -- phrases : Array.Array String,
-    -- xy : Position
-    -- , drag : Draggable.State String}
---currentPhrase = Array.get 0 myArray
+
+-- phrases : Array.Array String
 
 shapePositions : List Position
 shapePositions = --[Position 0 0, Position 80 0, Position 160 0]
@@ -112,13 +110,14 @@ shapePositions = --[Position 0 0, Position 80 0, Position 160 0]
         indexToPosition =
             toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
     in
-    List.range 0 8 |> List.map indexToPosition
+    List.range 0 9 |> List.map indexToPosition
 
 
 init : flag -> ( Model, Cmd Msg )
 init _ =
     ( { shapeGroup = makeShapeGroup shapePositions
-        , drag = Draggable.init }
+        , drag = Draggable.init
+        , currentPhrase = Array.get 0 (Array.fromList phrases) }
         , Cmd.none
     )
 
@@ -189,18 +188,27 @@ dragConfig =
 view : Model -> Html Msg
 view ({ shapeGroup } as model) =
     let
-        phrasehtml = div [HA.id "phrases"] [H.text "the end"]
+        phrasehtml = div [HA.id "phrases"] [H.text (Maybe.withDefault "" (List.head phrases))]
 
-        sentences = "the end"
-        -- String.join " " (Array.toList phrases)
+        sentences =
+            String.join " " --(Array.toList
+            phrases
+            --)
+         --({ phrases = Array.fromList sentences,
+    --     currentPhrase = List.head sentences,
+    --     xy = Position 100 100, drag = Draggable.init},
+    --     Cmd.none)
+
+--I think i need to .... get the words into an array, and then put them into a array
+
         wordshtml =
             sentences
             |> String.split " "
             |> List.map ( \word ->
                tr[] [td [HA.class "words"
-            --    , Draggable.mouseTrigger "my-element" DragMsg]
-            -- ++ Draggable.touchTriggers "my-element" DragMsg)
-               ]  [H.text word] ] )
+               , Draggable.mouseTrigger "my-element" DragMsg]
+                -- ++ Draggable.touchTriggers "my-element" DragMsg
+                 [H.text word] ] )
             |> table [HA.id "wordstable"]
             --make this separate into only three rows and append the words into separate tables
 
@@ -217,46 +225,48 @@ view ({ shapeGroup } as model) =
         boxeshtml=
             boxes
             |> List.map (\word -> li[] [button[ HA.id "grammarboxes" ] [H.text word]])
-            |> ul [ HA.id "allboxes"]
+            |> ul [ HA.id "boxes"]
 
         --gbtitleb= div[HA.class "title"] [String "Grammar Boxes"]
         --navpanel = button[ onClick "openNav()" ] [H.text "Open"]
 
-        arrowLhtml = svg [SA.height "30px", SA.width "30px"]
+        arrowLhtml = svg [SA.height "60px", SA.width "30px"]
             [ S.path[
-                d "M 19 4 L 18 4.57227 L 5 12 L 18 19.4277 L 19 20 L 19 18.8438 L 19 5 L 19 4 Z M 18 5.58398 L 18 18.2715 L 7.02344 12 L 18 5.58398 Z"
+           --     d "M 19 4 L 18 4.57227 L 5 12 L 18 19.4277 L 19 20 L 19 18.8438 L 19 5 L 19 4 Z M 18 5.58398 L 18 18.2715 L 7.02344 12 L 18 5.58398 Z"
+                d "M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
                 , stroke "darkslategray"
                 , fill "darkslategray"
+                , SA.transform "scale(0.1)"
                 ]
             []]
-        arrowRhtml = svg [SA.height "30px", SA.width "30px", SA.transform "scale(-1, 1)"]
+        arrowRhtml = svg [SA.height "60px", SA.width "30", SA.id "right" ]
             [ S.path[
-                d "M 24.695 12.912 L 13.718 19.328 L 24.695 25.599 L 24.695 12.912 Z M 25.695 11.328 L 25.695 12.328 L 25.695 26.172 L 25.695 27.328 L 24.695 26.756 L 11.695 19.328 L 24.695 11.9 L 25.695 11.328 Z"
+            --    d "M 24.695 12.912 L 13.718 19.328 L 24.695 25.599 L 24.695 12.912 Z M 25.695 11.328 L 25.695 12.328 L 25.695 26.172 L 25.695 27.328 L 24.695 26.756 L 11.695 19.328 L 24.695 11.9 L 25.695 11.328 Z"
+                d "M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
                 , stroke "darkslategray"
                 , fill "darkslategray"
+                , SA.transform "scale(0.1)"
                 ]
             []]
+
+--preserveAspectRatio="X200Y200 meet
 
     in
     div []
-        [   h1 [] [table [] [tr [] [ td[] [arrowLhtml], td[HA.id "sentence"] [phrasehtml], td[HA.id "right"] [arrowRhtml]] ]]
---TODO: Line up Arrows
+        [   h1 [] [table [HA.id "top"] [tr [] [ td [HA.id "left"] [arrowLhtml]
+            , td[HA.id "sentence"] [ phrasehtml]
+            , td[HA.id "right"] [arrowRhtml]
+            ]
+            ] ]
         ,   span [] [
             --wordtrial
             ]
-        ,   div [ HA.id "sidebar"] [ H.text "Grammar Boxes",
-                div [HA.class "bottomborder"] [boxeshtml]
-            ,   div [] [wordshtml] --trouble here
-            ]
-        ,   div [] [ ]
-        ,   div [ HA.id "bottompanel" ]
-                  [ div [SA.style "height: 200px"] []
-                     , S.svg
-                                [ SA.id "shapes", SA.style "height: 200px; width: 100%; position: fixed" ]
-                                [ shapesView shapeGroup ]
-                            ]
-
-
+        ,   nav [] [ H.text "Grammar Boxes"
+        , boxeshtml ]
+        ,   wordshtml
+        , S.svg
+            [ SA.id "shapes", SA.style "height: 200px; width: 100%; position: fixed" ]
+            [ shapesView shapeGroup ]
         ]
 
 
@@ -279,6 +289,16 @@ shapeView { id, position } =
         , onMouseUp StopDragging]
                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) listShapes)]
 --TODO: want the shapes to stick to the bottom
+
+
+-- wordView: Shape -> Html Msg
+-- wordView { id, position } =
+--         svg [SA.height "50px", SA.width "fit", num SA.x position.x
+--         , num SA.y position.y
+--         , HA.style "cursor" "move"
+--         , Draggable.mouseTrigger id DragMsg
+--         , onMouseUp StopDragging]
+--                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) (Array.fromList phrases))]
 
 listShapes : Array.Array (Svg msg)
 listShapes =
@@ -374,11 +394,13 @@ listShapes =
                     , transform "scale(.7)"]
                 []
                         --]
+        test =
+                S.text_ [textLength "80%", y "45", fontSize "30px", SA.style "border: 5px"][S.text "hey"]
 
-    in Array.fromList [trinhtml, triadjhtml, triarthtml, circlehtml, circleadvhtml, creshtml, triphtml, recthtml, keyholehtml]
 
---TODO: Keyhole doesn't show yet
 
+
+    in Array.fromList [trinhtml, triadjhtml, triarthtml, circlehtml, circleadvhtml, creshtml, triphtml, recthtml, keyholehtml, test]
 
         -- [ num SA.width 100 --this is fake
         -- , num SA.height 100

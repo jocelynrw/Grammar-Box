@@ -98,6 +98,7 @@ phrases = ["the red house", "that big barn", "a furry cat"]
 
 type alias Model =
     { shapeGroup : ShapeGroup
+    , wordGroup : ShapeGroup
     , drag : Draggable.State Id
     , currentPhrase : Maybe String
     }
@@ -108,14 +109,23 @@ shapePositions : List Position
 shapePositions = --[Position 0 0, Position 80 0, Position 160 0]
     let
         indexToPosition =
-            toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
+            toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 650)
     in
     List.range 0 9 |> List.map indexToPosition
+
+wordPositions : List Position
+wordPositions =
+    let
+        indexToPosition =
+            toFloat >> (*) 100 >> (+) 20 >> (\x -> Position x 10)
+    in
+    List.range 0 8 |> List.map indexToPosition
 
 
 init : flag -> ( Model, Cmd Msg )
 init _ =
     ( { shapeGroup = makeShapeGroup shapePositions
+        , wordGroup = makeShapeGroup wordPositions
         , drag = Draggable.init
         , currentPhrase = Array.get 0 (Array.fromList phrases) }
         , Cmd.none
@@ -265,7 +275,7 @@ view ({ shapeGroup } as model) =
         , boxeshtml ]
         ,   wordshtml
         , S.svg
-            [ SA.id "shapes", SA.style "height: 200px; width: 100%; position: fixed" ]
+            [ SA.id "shapes", SA.style "height: 80%; width: 100%; position: fixed" ]
             [ shapesView shapeGroup ]
         ]
 
@@ -286,10 +296,11 @@ shapeView { id, position } =
         , num SA.y position.y
         , HA.style "cursor" "move"
         , Draggable.mouseTrigger id DragMsg
-        , onMouseUp StopDragging]
+        , onMouseUp StopDragging
+        --, SA.transform "translate(50,0)"
+        ]
                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) listShapes)]
---TODO: want the shapes to stick to the bottom
-
+--TODO: They are sticking to the bottom, but it doesn't change for other screens
 
 -- wordView: Shape -> Html Msg
 -- wordView { id, position } =

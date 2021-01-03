@@ -162,9 +162,10 @@ type Msg
     | StartDragging String
     | StopDragging
 
+--TODO: so much to change here with shapegroup
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ shapeGroup } as model) =
+update msg ({ shapeGroup, wordGroup } as model) =
     case msg of
         OnDragBy delta ->
             ( { model | shapeGroup = shapeGroup |> dragActiveBy delta }, Cmd.none )
@@ -196,7 +197,7 @@ dragConfig =
 
 
 view : Model -> Html Msg
-view ({ shapeGroup } as model) =
+view ({ shapeGroup, wordGroup } as model) =
     let
         phrasehtml = div [HA.id "phrases"] [H.text (Maybe.withDefault "" (List.head phrases))]
 
@@ -288,7 +289,14 @@ shapesView shapeGroup =
         |> List.map shapeView
         |> S.node "g" []
 
---I need to find a way to get the svg images to go lower. I tried adding a div ahead of it, but it didn't work..
+-- wordsView : ShapeGroup -> Svg Msg
+-- wordsView wordGroup =
+--     wordGroup
+--         |> allShapes
+--         |> List.reverse
+--        |> List.map wordView
+--        |> S.node "h" []
+
 
 shapeView : Shape -> Html Msg
 shapeView { id, position } =
@@ -310,6 +318,44 @@ shapeView { id, position } =
 --         , Draggable.mouseTrigger id DragMsg
 --         , onMouseUp StopDragging]
 --                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) (Array.fromList phrases))]
+
+--listWords : Array.Array (Svg msg)
+--List String ->
+
+listWords =
+--phrases
+
+    let
+        arrayofwords =
+            phrases
+                |> List.map (String.split " ")
+                |> List.map Array.fromList
+
+        articlebox =
+            List.foldl (\x a -> (Array.get 0 x) :: a) [] arrayofwords
+
+--make svgs from this list
+
+--        adjectivebox =
+
+--        nounbox =
+
+    in
+        Array.fromList [articlebox]
+
+
+--
+--
+--
+--Array.get 1
+--Append
+--Array.get 2
+--Append
+--List.drop 1
+
+
+
+
 
 listShapes : Array.Array (Svg msg)
 listShapes =
@@ -422,16 +468,16 @@ listShapes =
         -- ]
         -- []
 
-background : Svg msg
-background =
-    S.rect
-        [ SA.x "0"
-        , SA.y "0"
-        , SA.width "100%"
-        --, SA.height "200px"
-        , SA.fill "#eee"
-        ]
-        []
+-- background : Svg msg
+-- background =
+--     S.rect
+--         [ SA.x "0"
+--         , SA.y "0"
+--         , SA.width "100%"
+--         --, SA.height "200px"
+--         , SA.fill "#eee"
+--         ]
+--         []
 
 num : (String -> S.Attribute msg) -> Float -> S.Attribute msg
 num attr value =

@@ -273,11 +273,16 @@ view ({ shapeGroup, wordGroup } as model) =
             --wordtrial
             ]
         ,   nav [] [ H.text "Grammar Boxes"
-        , boxeshtml ]
+        , S.svg
+            [SA.style "height: 80%; width: 100%; position: fixed" ]
+            [ wordsView wordGroup ]
+        --boxeshtml
+        ]
         ,   wordshtml
         , S.svg
             [ SA.id "shapes", SA.style "height: 80%; width: 100%; position: fixed" ]
             [ shapesView shapeGroup ]
+
         ]
 
 
@@ -289,13 +294,13 @@ shapesView shapeGroup =
         |> List.map shapeView
         |> S.node "g" []
 
--- wordsView : ShapeGroup -> Svg Msg
--- wordsView wordGroup =
---     wordGroup
---         |> allShapes
---         |> List.reverse
---        |> List.map wordView
---        |> S.node "h" []
+wordsView : ShapeGroup -> Svg Msg
+wordsView wordGroup =
+    wordGroup
+        |> allShapes
+        |> List.reverse
+       |> List.map wordView
+       |> S.node "h" []
 
 
 shapeView : Shape -> Html Msg
@@ -310,49 +315,67 @@ shapeView { id, position } =
                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) listShapes)]
 --TODO: They are sticking to the bottom, but it doesn't change for other screens
 
--- wordView: Shape -> Html Msg
--- wordView { id, position } =
---         svg [SA.height "50px", SA.width "fit", num SA.x position.x
---         , num SA.y position.y
---         , HA.style "cursor" "move"
---         , Draggable.mouseTrigger id DragMsg
---         , onMouseUp StopDragging]
---                         [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) (Array.fromList phrases))]
+wordView: Shape -> Html Msg
+wordView { id, position } =
+        svg [SA.height "50px", SA.width "fit", num SA.x position.x
+        , num SA.y position.y
+        , HA.style "cursor" "move"
+        , Draggable.mouseTrigger id DragMsg
+        , onMouseUp StopDragging]
+                        [ Maybe.withDefault (svg [] []) (Array.get (Maybe.withDefault 0 (String.toInt id)) listArticles)]
 
 --listWords : Array.Array (Svg msg)
 --List String ->
 
-listWords =
---phrases
+-- listWords =
+-- --phrases
+--     let
+--         arrayofwords =
+--             phrases
+--                 |> List.map (String.split " ")
+--                 |> List.map Array.fromList
 
+--         articlebox =
+--             List.foldl (\x a ->
+--                             Maybe.withDefault "" (Array.get 0 x)
+--                             :: a)
+--                         [] arrayofwords
+--                 |> List.map (\word -> S.text_ []
+--                 [S.text word])
+
+--     in Array.fromList [articlebox]
+
+listArticles : Array.Array (Svg msg)
+listArticles =
+--phrases
     let
         arrayofwords =
             phrases
                 |> List.map (String.split " ")
                 |> List.map Array.fromList
 
-        articlebox =
-            List.foldl (\x a -> (Array.get 0 x) :: a) [] arrayofwords
+        in
+            Array.fromList( List.foldl (\x a ->
+                            Maybe.withDefault "" (Array.get 0 x)
+                            :: a)
+                        [] arrayofwords
+                |> List.map (\word -> S.text_ []
+                    [S.text word])
+            )
+
+
+-- |> List.map ( \word ->
+            --    tr[] [td [HA.class "words"
+            --    , Draggable.mouseTrigger "my-element" DragMsg]
+            --     -- ++ Draggable.touchTriggers "my-element" DragMsg
+            --      [H.text word] ] )
+
 
 --make svgs from this list
 
 --        adjectivebox =
 
 --        nounbox =
-
-    in
-        Array.fromList [articlebox]
-
-
---
---
---
---Array.get 1
---Append
---Array.get 2
---Append
---List.drop 1
-
 
 
 
